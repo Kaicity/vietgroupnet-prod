@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Alert, Box, Button, CircularProgress, Grid, Link, Paper, Typography } from '@mui/material';
-import LazyLoad from 'react-lazyload';
 import bgLogin from '../../../assets/bgLogin.jpg';
 import vgLogo from '../../../assets/vietgroupNobackgroud.png';
 import { useNavigate } from 'react-router-dom';
