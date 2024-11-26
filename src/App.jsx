@@ -20,8 +20,6 @@ import Footer from './components/Footer.jsx';
 import OrderForm from './pages/Order/OrderForm.jsx';
 import PayCollaborator from './pages/PayCollaborator/PayCollaborator.jsx';
 
-import { Analytics } from '@vercel/analytics/react';
-
 import {
   TYPE_ADMINISTRATOR,
   TYPE_COLLABORATOR,
@@ -288,7 +286,6 @@ function App() {
                 }
               />
             </Routes>
-            <Analytics mode="production" />;
           </div>
         </AppProvider>
       </AuthProvider>
