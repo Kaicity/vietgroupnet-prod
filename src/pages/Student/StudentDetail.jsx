@@ -330,6 +330,7 @@ const StudentDetail = () => {
                   value={student?.learningSituation || 'Chưa có'}
                 />
               </Box>
+              
               <Box>
                 <InfoItem icon={NoteOutlined} label="Ghi chú: " />
                 <CustomTextQuill

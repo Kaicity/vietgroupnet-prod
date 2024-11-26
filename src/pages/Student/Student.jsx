@@ -84,7 +84,6 @@ const Student = () => {
   const getDataStudents = async (currentPage, currentLimit) => {
     setLoading(true);
 
-    // Tạo bộ lọc
     const filters = {
       ...(diligenceFilter && { diligence: diligenceFilter }),
       ...(genderFilter && { gender: genderFilter }),
@@ -93,91 +92,57 @@ const Student = () => {
     };
 
     // Xử lý amount filter dựa trên giá trị được chọn
-    if (amountFilter) {
-      switch (amountFilter) {
-        case '10000000':
-          filters.amountMax = 10000000;
-          break;
-        case '10000000-50000000':
-          filters.amountMin = 10000000;
-          filters.amountMax = 50000000;
-          break;
-        case '50000000-100000000':
-          filters.amountMin = 50000000;
-          filters.amountMax = 100000000;
-          break;
-        case '100000000':
-          filters.amountMin = 100000000;
-          break;
-        default:
-          break;
-      }
+    switch (amountFilter) {
+      case '10000000':
+        filters.amountMax = 10000000;
+        break;
+      case '10000000-50000000':
+        filters.amountMin = 10000000;
+        filters.amountMax = 50000000;
+        break;
+      case '50000000-100000000':
+        filters.amountMin = 50000000;
+        filters.amountMax = 100000000;
+        break;
+      case '100000000':
+        filters.amountMin = 100000000;
+        break;
+
+      default:
+        break;
     }
 
-    try {
-      // Gọi API
-      const response = await getStudents({
+    let response;
+
+    if (searchText) {
+      response = await getStudents({
         page: currentPage,
         limit: currentLimit,
         filters,
       });
+    } else {
+      response = await getStudents({
+        page: currentPage,
+        limit: currentLimit,
+        filters,
+      });
+    }
 
-      // Xử lý kết quả trả về
-      if (response.data && Array.isArray(response.data.students)) {
-        if (response.status === 'success') {
-          setStudents(response.data.students);
-          setTotalStudents(response.data.pagination.total);
-        } else {
-          setStudents([]);
-          setTotalStudents(0);
-        }
-      } else {
-        setStudents([]);
-        setTotalStudents(0);
+    if (response.data && Array.isArray(response.data.students)) {
+      if (response.status === 'success') {
+        setStudents(response.data.students);
+        setTotalStudents(response.data.pagination.total);
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching students:', error);
+    } else {
       setStudents([]);
       setTotalStudents(0);
-    } finally {
-      setLoading(false);
     }
   };
 
   const confirmDelete = () => {
-    // Kiểm tra dữ liệu đầu vào
-    if (!selectedRowKeys || selectedRowKeys.length === 0) {
-      Modal.warning({
-        title: 'Thông báo',
-        content: 'Vui lòng chọn ít nhất một cộng tác viên để xóa.',
-      });
-      return;
-    }
-
-    // Tách logic render danh sách cộng tác viên
-    const renderSelectedRows = () => (
-      <div>
-        {selectedRows.slice(0, 10).map((student) => (
-          <div key={student.studentCode}>
-            <br />
-            <Typography fontSize={typography.fontSize.sizeM}>
-              Tên cộng tác viên: <strong>{student.name}</strong> <br />
-            </Typography>
-            <Typography fontSize={typography.fontSize.sizeM}>
-              Có mã: <strong>{student.studentCode}</strong>
-            </Typography>
-          </div>
-        ))}
-        {selectedRows.length > 10 && (
-          <Typography fontSize={typography.fontSize.sizeM}>
-            Và <strong>{selectedRows.length - 10}</strong> cộng tác viên khác...
-          </Typography>
-        )}
-      </div>
-    );
-
     Modal.confirm({
-      title: 'Bạn có chắc chắn là xóa học viên?',
+      title: 'Bạn có chắc chắn là xóa cộng tác viên?',
       content: (
         <div
           style={{
@@ -189,51 +154,58 @@ const Student = () => {
           <Typography fontSize={typography.fontSize.sizeM}>
             Số lượng: <strong>{selectedRowKeys.length}</strong>
           </Typography>
-          {renderSelectedRows()}
+
+          <div>
+            {selectedRows.map((student) => (
+              <div key={student.studentCode}>
+                <br />
+                <Typography fontSize={typography.fontSize.sizeM}>
+                  Tên cộng tác viên: <strong>{student.name}</strong> <br />
+                </Typography>
+                <Typography fontSize={typography.fontSize.sizeM}>
+                  Có mã: <strong>{student.studentCode}</strong>
+                </Typography>
+              </div>
+            ))}
+          </div>
         </div>
       ),
       okText: 'Đồng ý',
       okType: 'danger',
       cancelText: 'Hủy',
-      onOk: handleDeleteMultiple,
+      onOk() {
+        handleDeleteMultiple();
+      },
+      onCancel() {},
     });
   };
 
   const handleDeleteMultiple = async () => {
-    if (!selectedRows || selectedRows.length === 0) {
-      setContent('Không có học viên nào được chọn để xóa.');
-      setSeverity('warning');
-      setIsShowMessage(true);
-      return;
-    }
-
     try {
-      // Gửi yêu cầu xóa đồng thời
-      const results = await Promise.allSettled(selectedRows.map((student) => deleteStudent(student.studentCode)));
+      const promises = selectedRows.map((student) => {
+        return deleteStudent(student.studentCode); // request api delete
+      });
+      // Chờ khi tất cả api trên được hoàn tất
+      const response = await Promise.all(promises);
 
-      // Phân tích kết quả
-      const failed = results.filter((res) => res.status === 'rejected');
-      const succeeded = results.filter((res) => res.status === 'fulfilled' && res.value.status === 'success');
+      const allSuccess = response.every((res) => res.status === 'success');
 
-      if (failed.length > 0) {
-        setContent(`Xóa thành công ${succeeded.length} Học viên, thất bại ${failed.length} Học viên.`);
-        setSeverity('warning');
-      } else {
-        setContent('Đã xóa thành công tất cả cộng học viên!');
+      if (allSuccess) {
+        setContent('Đã xóa thành công!');
         setSeverity('success');
         setSelectedRowKeys([]);
         setSelectedRows([]);
         setIsVisibleDelete(false);
+      } else {
+        setContent('Xóa thất bại!');
+        setSeverity('error');
       }
-
-      // Cập nhật danh sách sau khi xóa
+      setIsShowMessage(true);
       getDataStudents();
     } catch (error) {
-      setContent('Có lỗi xảy ra trong quá trình xóa. Vui lòng thử lại.');
-      setSeverity('error');
-      console.error(error);
-    } finally {
       setIsShowMessage(true);
+      setContent(error);
+      setSeverity('error');
     }
   };
 
@@ -272,47 +244,43 @@ const Student = () => {
   };
 
   const handleExportToExcel = async () => {
-    if (!Array.isArray(students) || !students.length) {
-      return message.error('Không có dữ liệu để xuất.');
-    }
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('Danh Sách Học viên');
+    const columns = [
+      { header: 'Mã học viên', key: 'studentCode', width: 15 },
+      { header: 'Họ và Tên', key: 'name', width: 20 },
+      { header: 'Địa chỉ', key: 'address', width: 25 },
+      { header: 'Số Điện Thoại', key: 'studentPhoneNumber', width: 15 },
+      { header: 'Giới Tính', key: 'gender', width: 10 },
+      { header: 'Tình trạng học viên', key: 'studentStatus', width: 20 },
+      { header: 'Chuyên cần', key: 'diligence', width: 15 },
+      { header: 'Thái độ', key: 'attitude', width: 15 },
+      { header: 'Số tiền đã đóng (vnđ)', key: 'amountPaid', width: 20 },
+      { header: 'Người giới thiệu', key: 'collaborator', width: 20 },
+    ];
 
-    try {
-      const workbook = new ExcelJS.Workbook();
-      const sheet = workbook.addWorksheet('Danh Sách Học viên');
+    sheet.columns = columns;
 
-      const HEADER_BACKGROUND_COLOR = 'C4F09B';
-      const ROW_HEIGHT = 40;
-      const HEADER_HEIGHT = 50;
+    // Style headers
+    sheet.getRow(1).eachCell((cell) => {
+      cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+      cell.alignment = { vertical: 'middle', horizontal: 'center' };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'C4F09B' },
+      };
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      };
+    });
 
-      const columns = [
-        { header: 'Mã học viên', key: 'studentCode', width: 15 },
-        { header: 'Họ và Tên', key: 'name', width: 20 },
-        { header: 'Địa chỉ', key: 'address', width: 25 },
-        { header: 'Số Điện Thoại', key: 'studentPhoneNumber', width: 15 },
-        { header: 'Giới Tính', key: 'gender', width: 10 },
-        { header: 'Tình trạng học viên', key: 'studentStatus', width: 20 },
-        { header: 'Chuyên cần', key: 'diligence', width: 15 },
-        { header: 'Thái độ', key: 'attitude', width: 15 },
-        { header: 'Số tiền đã đóng (vnđ)', key: 'amountPaid', width: 20 },
-        { header: 'Người giới thiệu', key: 'collaborator', width: 20 },
-      ];
+    sheet.getRow(1).height = 50;
 
-      sheet.columns = columns;
-
-      // Style headers
-      sheet.getRow(1).eachCell((cell) => {
-        cell.font = { bold: true, color: { argb: 'FFFFFF' } };
-        cell.alignment = { vertical: 'middle', horizontal: 'center' };
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: HEADER_BACKGROUND_COLOR },
-        };
-        setCellStyle(cell, 'center');
-      });
-
-      sheet.getRow(1).height = HEADER_HEIGHT;
-
+    if (Array.isArray(students) && students.length) {
       const transformedData = students.map((student) => ({
         studentCode: student.studentCode,
         name: student.name,
@@ -328,9 +296,15 @@ const Student = () => {
 
       transformedData.forEach((data) => {
         const row = sheet.addRow(data);
-        row.height = ROW_HEIGHT;
+        row.height = 40;
         row.eachCell((cell) => {
-          setCellStyle(cell);
+          cell.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' },
+          };
+          cell.alignment = { vertical: 'middle', horizontal: 'left' };
         });
       });
 
@@ -344,19 +318,9 @@ const Student = () => {
       anchor.download = 'Danh_Sach_Hoc_Vien.xlsx';
       anchor.click();
       window.URL.revokeObjectURL(url);
-    } catch (error) {
-      message.error('Có lỗi xảy ra khi xuất file Excel.');
+    } else {
+      message.error('Không có dữ liệu để xuất.');
     }
-  };
-
-  const setCellStyle = (cell, alignment = 'left') => {
-    cell.border = {
-      top: { style: 'thin' },
-      left: { style: 'thin' },
-      bottom: { style: 'thin' },
-      right: { style: 'thin' },
-    };
-    cell.alignment = { vertical: 'middle', horizontal: alignment };
   };
 
   const handleExcelConfirm = () => {
@@ -372,81 +336,62 @@ const Student = () => {
     });
   };
 
-  const ACTIONS = {
-    EXPORT: 'ACTION-EXPORT',
-    EDIT: 'ACTION-EDIT',
-    VIEW: 'ACTION-VIEW',
-  };
-
   const handleMenuClick = async (e, studentCode) => {
-    if (!studentCode) {
-      return message.error('Mã học viên không hợp lệ!');
-    }
-
     switch (e.key) {
-      case ACTIONS.EXPORT:
-        return handleExport(studentCode);
-
-      case ACTIONS.EDIT:
-        return handleEdit(studentCode);
-
-      case ACTIONS.VIEW:
-        return handleView(studentCode);
-
+      case 'ACTION-EXPORT':
+        message.info(`Xuất thông tin Học viên có mã: ${studentCode}`);
+        break;
+      case 'ACTION-EDIT':
+        message.info(`Cập nhật Học viên có mã:  ${studentCode}`);
+        if (studentCode) {
+          navigate(`/edit-student/${studentCode}`);
+        }
+        break;
+      case 'ACTION-VIEW':
+        message.info(`Xem thông tin học viên có mã: ${studentCode}`);
+        if (studentCode) {
+          try {
+            const response = await getStudentByCode(studentCode);
+            if (response.status === 'success') {
+              setStudentDetail(response.data);
+              showDrawer();
+            }
+          } catch (error) {
+            console.error('Error fetching collaborator data:', error);
+          }
+        }
+        break;
       default:
-        message.info('Hành động không được hỗ trợ.');
+        message.info('Unknown action');
     }
   };
 
-  const handleExport = (studentCode) => {
-    message.info(`Xuất thông tin Học viên có mã: ${studentCode}`);
-    // Logic xuất dữ liệu tại đây (nếu cần).
-  };
-
-  const handleEdit = (studentCode) => {
-    message.info(`Cập nhật Học viên có mã: ${studentCode}`);
-    navigate(`/edit-student/${studentCode}`);
-  };
-
-  const handleView = async (studentCode) => {
-    message.info(`Xem thông tin học viên có mã: ${studentCode}`);
-    try {
-      const response = await getStudentByCode(studentCode);
-      if (response.status === 'success') {
-        setStudentDetail(response.data);
-        showDrawer();
-      } else {
-        message.error('Không thể tải thông tin học viên.');
-      }
-    } catch (error) {
-      console.error('Error fetching student data:', error);
-      message.error('Đã xảy ra lỗi khi tải thông tin học viên.');
-    }
-  };
-
-  const menuProps = (studentCode) => {
-    if (!studentCode) {
-      console.warn('Student code is undefined or null!');
-      return { items, onClick: () => message.error('Mã học viên không hợp lệ!') };
-    }
-
-    return {
-      items,
-      onClick: (e) => handleMenuClick(e, studentCode),
-    };
-  };
+  const menuProps = (studentCode) => ({
+    items,
+    onClick: (e) => handleMenuClick(e, studentCode),
+  });
 
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedKeys, selectedRowData) => {
       setSelectedRowKeys(selectedKeys);
       setSelectedRows(selectedRowData);
-      setIsVisibleDelete(selectedRowData.length > 0);
+
+      if (selectedRowData.length !== 0) {
+        setIsVisibleDelete(true);
+      } else {
+        setIsVisibleDelete(false);
+      }
     },
   };
 
-  const showDrawer = () => setIsDrawerOpen(true);
-  const closeDrawer = () => setIsDrawerOpen(false);
+  const showDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
 
   const items = [
     {
@@ -461,66 +406,6 @@ const Student = () => {
       label: 'Cập nhật',
       key: 'ACTION-EDIT',
       icon: <EditOutlined />,
-    },
-  ];
-  const filterOptions = {
-    diligence: [
-      { value: null, label: 'Mặc định' },
-      { value: 'poor', label: 'Kém' },
-      { value: 'average', label: 'Trung bình' },
-      { value: 'good', label: 'Khá' },
-      { value: 'excellent', label: 'Xuất sắc' },
-    ],
-    gender: [
-      { value: null, label: 'Mặc định' },
-      { value: 'female', label: 'Nữ' },
-      { value: 'male', label: 'Nam' },
-      { value: 'other', label: 'Khác' },
-    ],
-    studentStatus: [
-      { value: null, label: 'Mặc định' },
-      { value: 'BI', label: 'Trước phỏng vấn' },
-      { value: 'AI', label: 'Sau phỏng vấn' },
-      { value: 'HRB', label: 'Có giấy phép lưu trú' },
-      { value: 'FA', label: 'Đã bay' },
-    ],
-    amount: [
-      { value: null, label: 'Mặc định' },
-      { value: '10000000', label: 'Dưới 10,000,000/đ' },
-      { value: '10000000-50000000', label: 'Từ 10,000,000 đến 50,000,000/đ' },
-      { value: '50000000-100000000', label: 'Từ 50,000,000 đến 100,000,000/đ' },
-      { value: '100000000', label: 'Trên 100,000,000/đ' },
-    ],
-  };
-
-  const filters = [
-    {
-      key: 'diligenceFilter',
-      value: diligenceFilter,
-      onChange: handleDiligenceChange,
-      options: filterOptions.diligence,
-      placeholder: 'Chọn chuyên cần',
-    },
-    {
-      key: 'genderFilter',
-      value: genderFilter,
-      onChange: handleGenderChange,
-      options: filterOptions.gender,
-      placeholder: 'Chọn giới tính',
-    },
-    {
-      key: 'studentStatusFilter',
-      value: studentStatusFilter,
-      onChange: handleStudentStatusChange,
-      options: filterOptions.studentStatus,
-      placeholder: 'Chọn tình trạng',
-    },
-    {
-      key: 'amountFilter',
-      value: amountFilter,
-      onChange: handleAmountChange,
-      options: filterOptions.amount,
-      placeholder: 'Khoảng tiền',
     },
   ];
 
@@ -653,14 +538,88 @@ const Student = () => {
           gap={3}
           flexDirection={{ sm: 'column', xs: 'column', md: 'row' }}
         >
-          {filters.map((filter) => (
-            <SelectionOption
-              key={filter.key}
-              value={filter.value || filter.placeholder}
-              onChange={filter.onChange}
-              options={filter.options}
-            />
-          ))}
+          <SelectionOption
+            value={diligenceFilter || 'Chọn chuyên cần'}
+            onChange={handleDiligenceChange}
+            options={[
+              { value: null, label: 'Mặc định' },
+              {
+                value: 'poor',
+                label: 'Kém',
+              },
+              {
+                value: 'average',
+                label: 'Trung bình',
+              },
+              {
+                value: 'good',
+                label: 'Khá',
+              },
+              {
+                value: 'excellent',
+                label: 'Xuất sắc',
+              },
+            ]}
+          />
+
+          <SelectionOption
+            value={genderFilter || 'Chọn giới tính'}
+            onChange={handleGenderChange}
+            options={[
+              { value: null, label: 'Mặc định' },
+              { value: 'female', label: 'Nữ' },
+              { value: 'male', label: 'Nam' },
+              { value: 'other', label: 'Khác' },
+            ]}
+          />
+
+          <SelectionOption
+            value={studentStatusFilter || 'Chọn tình trạng'}
+            onChange={handleStudentStatusChange}
+            options={[
+              { value: null, label: 'Mặc định' },
+              {
+                value: 'BI',
+                label: 'Trước phỏng vấn',
+              },
+              {
+                value: 'AI',
+                label: 'Sau phỏng vấn',
+              },
+              {
+                value: 'HRB',
+                label: 'Có giấy phép lưu trú',
+              },
+              {
+                value: 'FA',
+                label: 'Đã bay',
+              },
+            ]}
+          />
+
+          <SelectionOption
+            value={amountFilter || 'Khoảng tiền'}
+            onChange={handleAmountChange}
+            options={[
+              { value: null, label: 'Mặc định' },
+              {
+                value: '10000000',
+                label: 'Dưới 10,000,000/đ',
+              },
+              {
+                value: '10000000-50000000',
+                label: 'Từ 10,000,000 đến 50,000,000/đ',
+              },
+              {
+                value: '50000000-100000000',
+                label: 'Từ 50,000,000 đến 100,000,000/đ',
+              },
+              {
+                value: '100000000',
+                label: 'Trên 100,000,000/đ',
+              },
+            ]}
+          />
 
           <Button variant="text" onClick={handleResetFilters}>
             <Typography px="4px" sx={{ textTransform: 'none' }} color={theme.gray[500]}>
@@ -766,6 +725,7 @@ const Student = () => {
         />
       </BoxCard>
 
+      {/* Drawer */}
       <div>
         <Drawer width={640} placement="right" onClose={closeDrawer} open={isDrawerOpen}>
           <Row>
@@ -874,7 +834,7 @@ const Student = () => {
             </Col>
           </Row>
           <Row>
-            <Col span={12}>
+            <Col span={24}>
               <DescriptionItem
                 title="Tình hình học tập"
                 content={
