@@ -370,7 +370,7 @@ const Order = () => {
   // columns table
   const columns = [
     {
-      title: 'Đơn Hàng',
+      title: 'Đơn Hàng'.toUpperCase(),
       dataIndex: 'orderCode',
       key: 'orderCode',
       width: collapsed ? 260 : 220,
@@ -378,7 +378,7 @@ const Order = () => {
       render: (text) => <span style={{ fontWeight: 500, color: theme.gray[400] }}>{text}</span>,
     },
     {
-      title: 'Tên Đơn Hàng',
+      title: 'Tên Đơn Hàng'.toUpperCase(),
       dataIndex: 'orderName',
       key: 'orderName',
       width: collapsed ? 300 : 280,
@@ -386,7 +386,7 @@ const Order = () => {
       render: (text) => <span style={{ fontWeight: 500 }}>{text}</span>,
     },
     {
-      title: 'Tên Công Ty',
+      title: 'Tên Công Ty'.toUpperCase(),
       dataIndex: 'companyName',
       key: 'companyName',
       width: collapsed ? 220 : 200,
@@ -395,7 +395,7 @@ const Order = () => {
     },
 
     {
-      title: 'Tên Nghiệp Đoàn',
+      title: 'Tên Nghiệp Đoàn'.toUpperCase(),
       dataIndex: 'unionName',
       key: 'unionName',
       width: collapsed ? 220 : 200,
@@ -403,23 +403,23 @@ const Order = () => {
       render: (text) => <span style={{ fontWeight: 500 }}>{text}</span>,
     },
     {
-      title: 'Ngày Phỏng Vấn',
+      title: 'Ngày Phỏng Vấn'.toUpperCase(),
       dataIndex: 'interviewDate',
       key: 'interviewDate',
-      width: collapsed ? 180 : 160,
+      width: collapsed ? 200 : 180,
       sorter: (a, b) => a.interviewDate.localeCompare(b.interviewDate),
       render: (text) => <span>{format(new Date(text), 'dd-MM-yyyy')}</span>,
     },
     {
-      title: 'Ngày Xuất Cảnh',
+      title: 'Ngày Xuất Cảnh'.toUpperCase(),
       dataIndex: 'departureDate',
       key: 'departureDate',
-      width: collapsed ? 180 : 160,
+      width: collapsed ? 200 : 180,
       sorter: (a, b) => a.departureDate.localeCompare(b.departureDate),
       render: (text) => <span>{format(new Date(text), 'dd-MM-yyyy')}</span>,
     },
     {
-      title: 'Hình thức',
+      title: 'Hình thức'.toUpperCase(),
       dataIndex: 'interviewStatus',
       key: 'interviewStatus',
       width: collapsed ? 220 : 200,
@@ -434,7 +434,7 @@ const Order = () => {
       },
     },
     {
-      title: 'Nữ',
+      title: 'Nữ'.toUpperCase(),
       dataIndex: 'female',
       key: 'male',
       width: collapsed ? 100 : 80,
@@ -442,7 +442,7 @@ const Order = () => {
       render: (male) => <span>{male ? male : 'Không có'}</span>,
     },
     {
-      title: 'Nam',
+      title: 'Nam'.toUpperCase(),
       dataIndex: 'male',
       key: 'male',
       width: collapsed ? 100 : 80,
@@ -451,7 +451,7 @@ const Order = () => {
     },
 
     {
-      title: 'Lương',
+      title: 'Lương'.toUpperCase(),
       dataIndex: 'salary',
       key: 'salary',
       width: collapsed ? 220 : 200,
@@ -462,7 +462,7 @@ const Order = () => {
       },
     },
     {
-      title: 'Trình Độ',
+      title: 'Trình Độ'.toUpperCase(),
       dataIndex: 'eduRequirements',
       key: 'eduRequirements',
       width: collapsed ? 260 : 220,
@@ -482,7 +482,7 @@ const Order = () => {
       },
     },
     {
-      title: 'Công Việc',
+      title: 'Công Việc'.toUpperCase(),
       dataIndex: 'jobDescription',
       key: 'jobDescription',
       width: collapsed ? 260 : 220,
@@ -491,7 +491,7 @@ const Order = () => {
     },
 
     {
-      title: 'Hành động',
+      title: 'Hành động'.toUpperCase(),
       key: 'action',
       width: 120,
       render: (_, action) => (

@@ -31,6 +31,7 @@ import { getCollaboratorByCode } from '../../api/collaborator';
 import { Avatar } from 'antd';
 import { getpayHistoryIsUser } from '../../api/payHistory.js';
 import { formattedAmountByNumeric, transformMoneyToNumeric } from '../../helper/moneyConvert.js';
+import { statusConfig } from '../../constants/enums/collaborator-enum.js';
 
 const CollaboratorDetail = () => {
   const [collaborator, setCollaborator] = useState(null);
@@ -238,15 +239,15 @@ const CollaboratorDetail = () => {
                 <InfoItem
                   icon={
                     collaborator
-                      ? collaborator.status === 'Active'
+                      ? collaborator.status === 'active'
                         ? CheckCircleOutline
-                        : collaborator.status === 'Inactive'
+                        : collaborator.status === 'inactive'
                           ? ErrorOutline
                           : HourglassEmpty
                       : Info
                   }
                   label="Trạng Thái: "
-                  value={collaborator ? collaborator.status : 'Chưa có'}
+                  value={collaborator ? statusConfig[collaborator?.status.toUpperCase()]?.label : 'Chưa có'}
                 />
               </Box>
             </Box>
@@ -335,7 +336,7 @@ const CollaboratorDetail = () => {
           {/* COT THU 3 */}
           <Grid container item={true} xs={24} sm={24} md={6} lg={4} direction={{ xs: 'row', lg: 'column', sm: 'row' }}>
             {statBoxData.map((stat, index) => (
-              <Grid item={true} p="10px" xs={12}  lg={2} key={index}>
+              <Grid item={true} p="10px" xs={12} lg={2} key={index}>
                 <Box
                   backgroundColor={theme.black[50]}
                   display="flex"

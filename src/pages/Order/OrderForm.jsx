@@ -36,7 +36,8 @@ import physicalStrengthOptions from '../../constants/physicalStrengthOptions.js'
 import dominantHandOptions from '../../constants/dominantHandOptions.js';
 import experienceOptions from '../../constants/experienceOptions.js';
 import educationLevels from '../../constants/educationLevels.js';
-import interviewFormatOptions from '../../constants/interviewStatusOptions.js';
+import interviewFormatOptions from '../../constants/interviewFormatOptions.js';
+import interviewStatusOptions from '../../constants/interviewStatusOptions.js';
 import typography from '../../utils/typography.js';
 import CustomTextQuill from '../../components/CustomTextQuill.jsx';
 

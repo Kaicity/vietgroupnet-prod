@@ -1,8 +1,7 @@
 import * as yup from 'yup';
 import dayjs from 'dayjs';
 
-const phoneRegex =
-  /^\+?(\d{1,4})?[-.\s]?(\d{2,4})[-.\s]?(\d{3,4})[-.\s]?(\d{3,4})$/;
+const phoneRegex = /^\+?(\d{1,4})?[-.\s]?(\d{2,4})[-.\s]?(\d{3,4})[-.\s]?(\d{3,4})$/;
 
 export const studentSchema = yup.object().shape({
   name: yup
@@ -16,14 +15,10 @@ export const studentSchema = yup.object().shape({
   dayOfBirth: yup
     .string()
     .required('Ngày Sinh là bắt buộc')
-    .test(
-      'is-valid-date',
-      'Ngày Sinh không hợp lệ',
-      (value) => {
-        const date = dayjs(value, 'YYYY-MM-DD', true);
-        return date.isValid() && date.year() >= 1940 && date.year() <= 2024;
-      },
-    ),
+    .test('is-valid-date', 'Ngày sinh có số tuổi không hợp lệ', (value) => {
+      const date = dayjs(value, 'YYYY-MM-DD', true);
+      return date.isValid() && date.year() >= 1920 && date.year() <= 2005;
+    }),
 
   identityNumber: yup
     .string()
@@ -55,10 +50,7 @@ export const studentSchema = yup.object().shape({
     .min(10, 'Số điện thoại phải có ít nhất 10 ký tự')
     .max(10, 'Số điện thoại không được vượt quá 10 ký tự'),
 
-  address: yup
-    .string()
-    .min(5, 'Địa Chỉ phải có ít nhất 5 ký tự')
-    .max(100, 'Địa Chỉ không được vượt quá 100 ký tự'),
+  address: yup.string().min(5, 'Địa Chỉ phải có ít nhất 5 ký tự').max(100, 'Địa Chỉ không được vượt quá 100 ký tự'),
 });
 
 //=============================================================

@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import theme from '../../utils/theme.js';
-import { AssessmentOutlined, HelpOutline, LoyaltyOutlined, PersonOutlineRounded } from '@mui/icons-material';
+import { AssessmentOutlined, PersonOutlineRounded } from '@mui/icons-material';
 import typography from '../../utils/typography';
 import { SchoolOutlined } from '@mui/icons-material';
 import { AppContext } from '../../context/AppProvider.jsx';
@@ -101,7 +101,6 @@ const SidebarTab = () => {
           to: '/pay-collaborator',
           icon: <AssessmentOutlined />,
         },
-        { title: 'Blog', to: '/blog', icon: <HelpOutline /> },
       );
       break;
     case TYPE_ADMINISTRATOR.role:
@@ -118,7 +117,6 @@ const SidebarTab = () => {
           to: '/order',
           icon: <AssessmentOutlined />,
         },
-        { title: 'Blog', to: '/blog', icon: <HelpOutline /> },
       );
       break;
     case TYPE_MANAGER.role:
@@ -135,7 +133,6 @@ const SidebarTab = () => {
           to: '/order',
           icon: <AssessmentOutlined />,
         },
-        { title: 'Blog', to: '/blog', icon: <HelpOutline /> },
       );
       break;
     case TYPE_COLLABORATOR.role:
@@ -147,7 +144,6 @@ const SidebarTab = () => {
           to: '/order',
           icon: <AssessmentOutlined />,
         },
-        { title: 'Blog', to: '/blog', icon: <HelpOutline /> },
       );
       break;
     default:

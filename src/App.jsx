@@ -26,7 +26,6 @@ import {
   TYPE_MANAGER,
   TYPE_SYSADMIN,
 } from './constants/roleDecentralization.js';
-import Blog from './pages/Blog/Blog.jsx';
 import PayCollaboratorForm from './pages/PayCollaborator/PayCollaboratorForm.jsx';
 import OrderDetail from './pages/Order/OrderDetail.jsx';
 
@@ -253,15 +252,7 @@ function App() {
                                 <PayCollaboratorForm />
                               </PrivateRoute>
                             }
-                          />
-                          <Route
-                            path="/blog"
-                            element={
-                              <PrivateRoute>
-                                <Blog />
-                              </PrivateRoute>
-                            }
-                          />
+                          />                         
                           <Route
                             path="/unauthorized"
                             element={
