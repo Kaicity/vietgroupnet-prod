@@ -1,24 +1,13 @@
-import { useNavigate, useNavigation } from 'react-router-dom';
-import {
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-  Typography,
-  Badge,
-  Divider,
-} from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Box, IconButton, Menu, MenuItem, Typography, Badge, Divider } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import FullScreenIcon from '@mui/icons-material/Fullscreen';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
 import { useContext, useEffect, useState } from 'react';
 import theme from '../../utils/theme.js';
-import vietnamFlag from '../../assets/vietnam.png';
-import SearchBar from '../../components/SearchBar.jsx';
 import {
   AppsOutlined,
   InfoOutlined,
@@ -28,7 +17,6 @@ import {
 } from '@mui/icons-material';
 import { AppContext } from '../../context/AppProvider.jsx';
 import { roleConfig } from '../../constants/enums/collaborator-enum.js';
-import userDefault from '../../assets/userDefault.png';
 import { Avatar } from 'antd';
 
 const spin = keyframes`
@@ -46,7 +34,6 @@ const Topbar = () => {
   const openSetting = Boolean(anchorElSetting);
 
   const [anchorElLanguage, setAnchorElLanguage] = useState(null);
-  const openLanguage = Boolean(anchorElLanguage);
 
   const { collapsed, setCollapsed } = useContext(AppContext);
 
@@ -154,9 +141,7 @@ const Topbar = () => {
       }}
     >
       <Box display="flex" alignItems="center" gap={1}>
-        <IconButton onClick={handleCollapsed}>
-          {collapsed ? <KeyboardTabOutlined /> : <MenuOpen />}
-        </IconButton>
+        <IconButton onClick={handleCollapsed}>{collapsed ? <KeyboardTabOutlined /> : <MenuOpen />}</IconButton>
 
         {/* <Box display={{ xs: 'none', sm: 'flex' }}>
           <SearchBar
@@ -233,11 +218,7 @@ const Topbar = () => {
                       </Avatar>
                     </Box>
                     <Box display="flex" flexDirection="column">
-                      <Typography
-                        fontWeight="bold"
-                        sx={{ fontSize: 13 }}
-                        color={theme.gray[800]}
-                      >
+                      <Typography fontWeight="bold" sx={{ fontSize: 13 }} color={theme.gray[800]}>
                         {username || 'N/A'}
                       </Typography>
                       <Typography sx={{ fontSize: 13 }} color={theme.gray[500]}>
@@ -258,53 +239,6 @@ const Topbar = () => {
                   <FullScreenIcon sx={{ marginRight: 2 }} color="primary" />
                   Toàn màn hình
                 </MenuItem>
-
-                <Box display={{ xs: '', md: 'none' }}>
-                  <MenuItem sx={{ fontSize: 13 }}>
-                    <Box display="flex" alignItems="center" gap={1}>
-                      <img src={vietnamFlag} />
-                      <Typography style={{ fontSize: 14 }}>
-                        Vietnamese
-                      </Typography>
-                      <Box>
-                        <IconButton
-                          aria-controls={openLanguage ? 'menu' : undefined}
-                          aria-haspopup="true"
-                          onClick={handleClickLanguage}
-                        >
-                          <KeyboardArrowDownIcon />
-                        </IconButton>
-
-                        <Menu
-                          id="menu"
-                          anchorEl={anchorElLanguage}
-                          open={openLanguage}
-                          onClose={handleCloseLanguage}
-                          PaperProps={{
-                            style: {
-                              maxHeight: 48 * 4.5,
-                              width: '12ch',
-                              marginTop: '10px',
-                            },
-                          }}
-                        >
-                          <MenuItem
-                            sx={{ fontSize: 13 }}
-                            onClick={handleCloseLanguage}
-                          >
-                            Vietnamese
-                          </MenuItem>
-                          <MenuItem
-                            sx={{ fontSize: 13 }}
-                            onClick={handleCloseLanguage}
-                          >
-                            English
-                          </MenuItem>
-                        </Menu>
-                      </Box>
-                    </Box>
-                  </MenuItem>
-                </Box>
 
                 <MenuItem sx={{ fontSize: 13 }} onClick={handleLogout}>
                   <LogoutIcon sx={{ marginRight: 2 }} color="primary" />

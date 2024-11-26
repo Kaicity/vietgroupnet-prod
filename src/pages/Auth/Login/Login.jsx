@@ -1,23 +1,11 @@
 import { useState } from 'react';
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  CssBaseline,
-  Grid,
-  Link,
-  Paper,
-  Typography,
-} from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Grid, Link, Paper, Typography } from '@mui/material';
+import LazyLoad from 'react-lazyload';
 import bgLogin from '../../../assets/bgLogin.jpg';
-import vgLogo from '../../../assets/vietgroupNobackgroud.png'
+import vgLogo from '../../../assets/vietgroupNobackgroud.png';
 import { useNavigate } from 'react-router-dom';
 import { Form, Formik } from 'formik';
-import {
-  getCollaboratorByCode,
-  loginCollaborator,
-} from '../../../api/collaborator.js';
+import { getCollaboratorByCode, loginCollaborator } from '../../../api/collaborator.js';
 import Account from '../../../models/account.js';
 import { AccountSchema } from './constrains/constrainAccount.js';
 import CustomTextField from '../../../components/CustomTextField.jsx';
@@ -60,9 +48,7 @@ const Login = () => {
       if (response.status === 'success') {
         sessionStorage.setItem('accessToken', response.data.accessToken);
 
-        const userResponse = await getCollaboratorByCode(
-          values.collaboratorCode,
-        );
+        const userResponse = await getCollaboratorByCode(values.collaboratorCode);
         sessionStorage.setItem('user', JSON.stringify(userResponse.data));
 
         //Set case role
@@ -106,7 +92,6 @@ const Login = () => {
 
   return (
     <Grid container component="main" style={{ height: '100vh' }}>
-      <CssBaseline />
       <Grid
         item
         xs={false}
@@ -139,13 +124,7 @@ const Login = () => {
             margin: '30px 32px',
           }}
         >
-          <img
-            src= {vgLogo}
-            alt="LogoVietGroupNet"
-            width="100px"
-            height="auto"
-            style={{ objectFit: 'cover' }}
-          />
+          <img src={vgLogo} alt="LogoVietGroupNet" width={75} height={75} style={{ objectFit: 'cover' }} />
         </Box>
 
         <Box
@@ -166,12 +145,7 @@ const Login = () => {
               alignItems: 'center',
             }}
           >
-            <Typography
-              component="h1"
-              variant="h4"
-              color="primary"
-              sx={{ fontWeight: 'bold' }}
-            >
+            <Typography component="h1" variant="h4" color="primary" sx={{ fontWeight: 'bold' }}>
               Đăng Nhập
             </Typography>
 
@@ -182,11 +156,7 @@ const Login = () => {
               </Alert>
             )}
 
-            <Formik
-              initialValues={Account}
-              validationSchema={AccountSchema}
-              onSubmit={handleSubmit}
-            >
+            <Formik initialValues={Account} validationSchema={AccountSchema} onSubmit={handleSubmit}>
               {({ values, errors, touched, handleBlur, handleChange }) => (
                 <Form style={{ width: '90%', marginTop: '8px' }} noValidate>
                   <Box sx={{ marginBottom: '30px' }}>
@@ -197,12 +167,8 @@ const Login = () => {
                       autoFocus
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      error={
-                        touched.collaboratorCode && errors.collaboratorCode
-                      }
-                      helperText={
-                        touched.collaboratorCode && errors.collaboratorCode
-                      }
+                      error={touched.collaboratorCode && errors.collaboratorCode}
+                      helperText={touched.collaboratorCode && errors.collaboratorCode}
                     />
                   </Box>
 
@@ -218,11 +184,7 @@ const Login = () => {
                     />
                   </Box>
 
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="flex-end"
-                  >
+                  <Box display="flex" alignItems="center" justifyContent="flex-end">
                     <Link href="#" variant="body2">
                       Quên mật khẩu?
                     </Link>
@@ -245,11 +207,7 @@ const Login = () => {
                       position: 'relative',
                     }}
                   >
-                    {isSubmitting ? (
-                      <CircularProgress size={24} sx={{ color: 'white' }} />
-                    ) : (
-                      'Đăng Nhập'
-                    )}
+                    {isSubmitting ? <CircularProgress size={24} sx={{ color: 'white' }} /> : 'Đăng Nhập'}
                   </Button>
                   <Box mt={5}>
                     <Copyright />
