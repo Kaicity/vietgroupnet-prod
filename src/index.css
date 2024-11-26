@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+html,
+body,
+#root,
+.app,
+.content {
+  height: 100%;
+  width: 100%;
+  font-family: 'Nunito Sans', sans-serif;
+  overflow-y: auto;
+  background-color: #f5f7fa;
+}
+
+.app {
+  display: flex;
+  position: relative;
+}
+
+body {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.react-datepicker__tab-loop,
+.react-datepicker-popper {
+  z-index: 1000;
+}

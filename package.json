@@ -1,0 +1,105 @@
+{
+  "name": "vietgroup-net-fe",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@faker-js/faker": "^9.0.3",
+    "@mui/icons-material": "^6.1.1",
+    "@mui/material": "^6.1.2",
+    "@mui/styles": "^6.1.1",
+    "@mui/x-charts": "^7.22.0",
+    "@mui/x-date-pickers": "^7.19.0",
+    "@mui/x-date-pickers-pro": "^7.19.0",
+    "@nivo/bar": "^0.87.0",
+    "@nivo/core": "^0.87.0",
+    "@nivo/geo": "^0.87.0",
+    "@nivo/line": "^0.87.0",
+    "@nivo/pie": "^0.87.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
+    "@tippyjs/react": "^4.2.6",
+    "@vercel/analytics": "^1.4.1",
+    "@vercel/speed-insights": "^1.1.0",
+    "antd": "^5.21.2",
+    "antd-style": "^3.7.0",
+    "axios": "^1.7.7",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.5",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
+    "firebase": "^10.14.1",
+    "formik": "^2.4.6",
+    "install": "^0.13.0",
+    "lodash": "^4.17.21",
+    "lodash.debounce": "^4.0.8",
+    "npm": "^10.9.0",
+    "react": "^18.3.1",
+    "react-calendar": "^5.0.0",
+    "react-countup": "^6.5.3",
+    "react-datepicker": "^7.4.0",
+    "react-dom": "^18.3.1",
+    "react-pro-sidebar": "^1.1.0",
+    "react-quill": "^2.0.0",
+    "react-router-dom": "^6.27.0",
+    "react-to-print": "^3.0.2",
+    "recharts": "^2.13.3",
+    "rollup": "^4.27.4",
+    "styled-components": "^6.1.13",
+    "vercel": "^39.1.1",
+    "web-vitals": "^4.2.3",
+    "xlsx": "^0.18.5",
+    "yup": "^1.4.0",
+    "@esbuild/linux-x64": "^0.24.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "globals": "^15.9.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "vite": "^5.4.1"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --write"
+    ],
+    "*.jsx": [
+      "prettier --write"
+    ],
+    "*.ts": [
+      "prettier --write"
+    ],
+    "*.tsx": [
+      "prettier --write"
+    ],
+    "*.css": [
+      "prettier --write"
+    ],
+    "*.json": [
+      "prettier --write"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
