@@ -18,6 +18,11 @@ import { getOrderTotal } from '../../api/order';
 import { roleConfig } from '../../constants/enums/collaborator-enum';
 import payCollaboratorStatusOPtions from '../../constants/payCollaboratorStatusOptions';
 
+import userIcon from '../../assets/icons/team.png';
+import chartIcon from '../../assets/icons/box.png';
+import boxIcon from '../../assets/icons/coins.png';
+import timeIcon from '../../assets/icons/time.png';
+
 const Dashboard = () => {
   const { collapsed } = useContext(AppContext);
 
@@ -31,9 +36,9 @@ const Dashboard = () => {
   const [userData, setUserData] = useState({});
   const [payment, setPayment] = useState([]);
   const [total, setTotal] = useState(0);
-  const [countUnpaid,setCountUnpaid]=useState(0);
-  const[notpayment,setNotPayment]=useState([]);
-  
+  const [countUnpaid, setCountUnpaid] = useState(0);
+  const [notpayment, setNotPayment] = useState([]);
+
   useEffect(() => {
     loadTotalPayment();
     countNotPayment();
@@ -93,46 +98,44 @@ const Dashboard = () => {
 
   const getDataPayCollaborator = async () => {
     setLoading(true);
-  
+
     const userCurrent = JSON.parse(sessionStorage.getItem('user'));
     const response = await getpayHistoryIsUser({
       page: 1,
       limit: 20,
       collaboratorCode: userCurrent.collaboratorCode,
     });
-  
+
     if (response.data && Array.isArray(response.data.payHistories)) {
       if (response.status === 'success') {
-        let temp = [];  // Khởi tạo mảng trống để chứa các phần tử có status = 'paid'
-        let notPaid = [];  // Mảng tạm thời lưu các phần tử có status != 'paid'
+        let temp = []; // Khởi tạo mảng trống để chứa các phần tử có status = 'paid'
+        let notPaid = []; // Mảng tạm thời lưu các phần tử có status != 'paid'
         response.data.payHistories.forEach((history) => {
           if (history.status === 'paid') {
-            temp.push(history);  // Thêm phần tử vào mảng temp nếu status = 'paid'
+            temp.push(history); // Thêm phần tử vào mảng temp nếu status = 'paid'
           } else {
-            notPaid.push(history);  // Thêm phần tử vào mảng notPaid nếu status != 'paid'
+            notPaid.push(history); // Thêm phần tử vào mảng notPaid nếu status != 'paid'
           }
         });
-       
-        setPayCollaborator(temp);  // Cập nhật lại payCollaborator
-        setNotPayment(notPaid);    // Cập nhật lại notpayment
+
+        setPayCollaborator(temp); // Cập nhật lại payCollaborator
+        setNotPayment(notPaid); // Cập nhật lại notpayment
         setLoading(false);
       }
     } else {
-      setPayCollaborator([]);  // Nếu không có dữ liệu, gán mảng rỗng
-      setNotPayment([]);       // Gán mảng notpayment rỗng nếu không có dữ liệu
+      setPayCollaborator([]); // Nếu không có dữ liệu, gán mảng rỗng
+      setNotPayment([]); // Gán mảng notpayment rỗng nếu không có dữ liệu
     }
   };
-  
-  
+
   const countNotPayment = () => {
     let Count = 0;
     notpayment.forEach((payment) => {
-      Count++;  // Tăng giá trị Count lên 1 cho mỗi phần tử trong mảng notpayment
+      Count++; // Tăng giá trị Count lên 1 cho mỗi phần tử trong mảng notpayment
     });
-    return setCountUnpaid(Count) ;
+    return setCountUnpaid(Count);
   };
-  
-  
+
   const loadTotalPayment = () => {
     const totalPayment = payCollaborators.reduce((sum, item) => {
       const statusOption = payCollaboratorStatusOPtions.find((opt) => opt.value === item.status);
@@ -148,18 +151,19 @@ const Dashboard = () => {
 
   const thumbNailChartIcon = {
     USER: {
-      src: 'src/assets/icons/team.png',
+      src: userIcon,
     },
     CHART: {
-      src: 'src/assets/icons/box.png',
+      src: chartIcon,
     },
     BOX: {
-      src: 'src/assets/icons/coins.png',
+      src: boxIcon,
     },
     TIME: {
-      src: 'src/assets/icons/time.png',
+      src: timeIcon,
     },
   };
+
   const statBoxData = [
     {
       title: studentQty,
@@ -186,7 +190,7 @@ const Dashboard = () => {
       stock: <TrendingDownIcon />,
     },
     {
-      title: countUnpaid|| 'Không có',
+      title: countUnpaid || 'Không có',
       subtitle: 'Chờ Xử Lý',
       progress: '0.80',
       increase: '+43%',
