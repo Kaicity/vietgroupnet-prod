@@ -13,18 +13,7 @@ import {
   VisibilityOutlined,
 } from '@mui/icons-material';
 
-import {
-  Col,
-  Divider,
-  Drawer,
-  Dropdown,
-  Input,
-  message,
-  Modal,
-  Row,
-  Space,
-  Tag,
-} from 'antd';
+import { Col, Divider, Drawer, Dropdown, Input, message, Modal, Row, Space, Tag } from 'antd';
 
 import styled from 'styled-components';
 
@@ -33,18 +22,11 @@ import { useNavigate } from 'react-router-dom';
 import theme from '../../utils/theme.js';
 import DataTable from '../../components/DataTable.jsx';
 import Header from '../../components/Header.jsx';
-import {
-  deleteStudent,
-  getStudentByCode,
-  getStudents,
-} from '../../api/student.js';
+import { deleteStudent, getStudentByCode, getStudents } from '../../api/student.js';
 
 import Message from '../../components/Message.jsx';
 
-import {
-  diligenceConfig,
-  studentStatusConfig,
-} from '../../constants/enums/student-enum.js';
+import { diligenceConfig, studentStatusConfig } from '../../constants/enums/student-enum.js';
 import { genderConfig } from '../../constants/enums/student-enum.js';
 import { AppContext } from '../../context/AppProvider.jsx';
 import { blinkBackgroundAnimation } from '../../animation/shake.js';
@@ -97,19 +79,12 @@ const Student = () => {
 
   useEffect(() => {
     getDataStudents();
-  }, [
-    page,
-    limit,
-    searchText,
-    diligenceFilter,
-    genderFilter,
-    studentStatusFilter,
-    amountFilter,
-  ]);
+  }, [page, limit, searchText, diligenceFilter, genderFilter, studentStatusFilter, amountFilter]);
 
   const getDataStudents = async (currentPage, currentLimit) => {
     setLoading(true);
 
+    // Tạo bộ lọc
     const filters = {
       ...(diligenceFilter && { diligence: diligenceFilter }),
       ...(genderFilter && { gender: genderFilter }),
@@ -118,57 +93,91 @@ const Student = () => {
     };
 
     // Xử lý amount filter dựa trên giá trị được chọn
-    switch (amountFilter) {
-      case '10000000':
-        filters.amountMax = 10000000;
-        break;
-      case '10000000-50000000':
-        filters.amountMin = 10000000;
-        filters.amountMax = 50000000;
-        break;
-      case '50000000-100000000':
-        filters.amountMin = 50000000;
-        filters.amountMax = 100000000;
-        break;
-      case '100000000':
-        filters.amountMin = 100000000;
-        break;
-
-      default:
-        break;
-    }
-
-    let response;
-
-    if (searchText) {
-      response = await getStudents({
-        page: currentPage,
-        limit: currentLimit,
-        filters,
-      });
-    } else {
-      response = await getStudents({
-        page: currentPage,
-        limit: currentLimit,
-        filters,
-      });
-    }
-
-    if (response.data && Array.isArray(response.data.students)) {
-      if (response.status === 'success') {
-        setStudents(response.data.students);
-        setTotalStudents(response.data.pagination.total);
-        setLoading(false);
+    if (amountFilter) {
+      switch (amountFilter) {
+        case '10000000':
+          filters.amountMax = 10000000;
+          break;
+        case '10000000-50000000':
+          filters.amountMin = 10000000;
+          filters.amountMax = 50000000;
+          break;
+        case '50000000-100000000':
+          filters.amountMin = 50000000;
+          filters.amountMax = 100000000;
+          break;
+        case '100000000':
+          filters.amountMin = 100000000;
+          break;
+        default:
+          break;
       }
-    } else {
+    }
+
+    try {
+      // Gọi API
+      const response = await getStudents({
+        page: currentPage,
+        limit: currentLimit,
+        filters,
+      });
+
+      // Xử lý kết quả trả về
+      if (response.data && Array.isArray(response.data.students)) {
+        if (response.status === 'success') {
+          setStudents(response.data.students);
+          setTotalStudents(response.data.pagination.total);
+        } else {
+          setStudents([]);
+          setTotalStudents(0);
+        }
+      } else {
+        setStudents([]);
+        setTotalStudents(0);
+      }
+    } catch (error) {
+      console.error('Error fetching students:', error);
       setStudents([]);
       setTotalStudents(0);
+    } finally {
+      setLoading(false);
     }
   };
 
   const confirmDelete = () => {
+    // Kiểm tra dữ liệu đầu vào
+    if (!selectedRowKeys || selectedRowKeys.length === 0) {
+      Modal.warning({
+        title: 'Thông báo',
+        content: 'Vui lòng chọn ít nhất một cộng tác viên để xóa.',
+      });
+      return;
+    }
+
+    // Tách logic render danh sách cộng tác viên
+    const renderSelectedRows = () => (
+      <div>
+        {selectedRows.slice(0, 10).map((student) => (
+          <div key={student.studentCode}>
+            <br />
+            <Typography fontSize={typography.fontSize.sizeM}>
+              Tên cộng tác viên: <strong>{student.name}</strong> <br />
+            </Typography>
+            <Typography fontSize={typography.fontSize.sizeM}>
+              Có mã: <strong>{student.studentCode}</strong>
+            </Typography>
+          </div>
+        ))}
+        {selectedRows.length > 10 && (
+          <Typography fontSize={typography.fontSize.sizeM}>
+            Và <strong>{selectedRows.length - 10}</strong> cộng tác viên khác...
+          </Typography>
+        )}
+      </div>
+    );
+
     Modal.confirm({
-      title: 'Bạn có chắc chắn là xóa cộng tác viên?',
+      title: 'Bạn có chắc chắn là xóa học viên?',
       content: (
         <div
           style={{
@@ -180,58 +189,51 @@ const Student = () => {
           <Typography fontSize={typography.fontSize.sizeM}>
             Số lượng: <strong>{selectedRowKeys.length}</strong>
           </Typography>
-
-          <div>
-            {selectedRows.map((student) => (
-              <div key={student.studentCode}>
-                <br />
-                <Typography fontSize={typography.fontSize.sizeM}>
-                  Tên cộng tác viên: <strong>{student.name}</strong> <br />
-                </Typography>
-                <Typography fontSize={typography.fontSize.sizeM}>
-                  Có mã: <strong>{student.studentCode}</strong>
-                </Typography>
-              </div>
-            ))}
-          </div>
+          {renderSelectedRows()}
         </div>
       ),
       okText: 'Đồng ý',
       okType: 'danger',
       cancelText: 'Hủy',
-      onOk() {
-        handleDeleteMultiple();
-      },
-      onCancel() {},
+      onOk: handleDeleteMultiple,
     });
   };
 
   const handleDeleteMultiple = async () => {
+    if (!selectedRows || selectedRows.length === 0) {
+      setContent('Không có học viên nào được chọn để xóa.');
+      setSeverity('warning');
+      setIsShowMessage(true);
+      return;
+    }
+
     try {
-      const promises = selectedRows.map((student) => {
-        return deleteStudent(student.studentCode); // request api delete
-      });
-      // Chờ khi tất cả api trên được hoàn tất
-      const response = await Promise.all(promises);
+      // Gửi yêu cầu xóa đồng thời
+      const results = await Promise.allSettled(selectedRows.map((student) => deleteStudent(student.studentCode)));
 
-      const allSuccess = response.every((res) => res.status === 'success');
+      // Phân tích kết quả
+      const failed = results.filter((res) => res.status === 'rejected');
+      const succeeded = results.filter((res) => res.status === 'fulfilled' && res.value.status === 'success');
 
-      if (allSuccess) {
-        setContent('Đã xóa thành công!');
+      if (failed.length > 0) {
+        setContent(`Xóa thành công ${succeeded.length} Học viên, thất bại ${failed.length} Học viên.`);
+        setSeverity('warning');
+      } else {
+        setContent('Đã xóa thành công tất cả cộng học viên!');
         setSeverity('success');
         setSelectedRowKeys([]);
         setSelectedRows([]);
         setIsVisibleDelete(false);
-      } else {
-        setContent('Xóa thất bại!');
-        setSeverity('error');
       }
-      setIsShowMessage(true);
+
+      // Cập nhật danh sách sau khi xóa
       getDataStudents();
     } catch (error) {
-      setIsShowMessage(true);
-      setContent(error);
+      setContent('Có lỗi xảy ra trong quá trình xóa. Vui lòng thử lại.');
       setSeverity('error');
+      console.error(error);
+    } finally {
+      setIsShowMessage(true);
     }
   };
 
@@ -270,53 +272,55 @@ const Student = () => {
   };
 
   const handleExportToExcel = async () => {
-    const workbook = new ExcelJS.Workbook();
-    const sheet = workbook.addWorksheet('Danh Sách Học viên');
-    const columns = [
-      { header: 'Mã học viên', key: 'studentCode', width: 15 },
-      { header: 'Họ và Tên', key: 'name', width: 20 },
-      { header: 'Địa chỉ', key: 'address', width: 25 },
-      { header: 'Số Điện Thoại', key: 'studentPhoneNumber', width: 15 },
-      { header: 'Giới Tính', key: 'gender', width: 10 },
-      { header: 'Tình trạng học viên', key: 'studentStatus', width: 20 },
-      { header: 'Chuyên cần', key: 'diligence', width: 15 },
-      { header: 'Thái độ', key: 'attitude', width: 15 },
-      { header: 'Số tiền đã đóng (vnđ)', key: 'amountPaid', width: 20 },
-      { header: 'Người giới thiệu', key: 'collaborator', width: 20 },
-    ];
+    if (!Array.isArray(students) || !students.length) {
+      return message.error('Không có dữ liệu để xuất.');
+    }
 
-    sheet.columns = columns;
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const sheet = workbook.addWorksheet('Danh Sách Học viên');
 
-    // Style headers
-    sheet.getRow(1).eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: 'FFFFFF' } };
-      cell.alignment = { vertical: 'middle', horizontal: 'center' };
-      cell.fill = {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: 'C4F09B' },
-      };
-      cell.border = {
-        top: { style: 'thin' },
-        left: { style: 'thin' },
-        bottom: { style: 'thin' },
-        right: { style: 'thin' },
-      };
-    });
+      const HEADER_BACKGROUND_COLOR = 'C4F09B';
+      const ROW_HEIGHT = 40;
+      const HEADER_HEIGHT = 50;
 
-    sheet.getRow(1).height = 50;
+      const columns = [
+        { header: 'Mã học viên', key: 'studentCode', width: 15 },
+        { header: 'Họ và Tên', key: 'name', width: 20 },
+        { header: 'Địa chỉ', key: 'address', width: 25 },
+        { header: 'Số Điện Thoại', key: 'studentPhoneNumber', width: 15 },
+        { header: 'Giới Tính', key: 'gender', width: 10 },
+        { header: 'Tình trạng học viên', key: 'studentStatus', width: 20 },
+        { header: 'Chuyên cần', key: 'diligence', width: 15 },
+        { header: 'Thái độ', key: 'attitude', width: 15 },
+        { header: 'Số tiền đã đóng (vnđ)', key: 'amountPaid', width: 20 },
+        { header: 'Người giới thiệu', key: 'collaborator', width: 20 },
+      ];
 
-    if (Array.isArray(students) && students.length) {
+      sheet.columns = columns;
+
+      // Style headers
+      sheet.getRow(1).eachCell((cell) => {
+        cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+        cell.alignment = { vertical: 'middle', horizontal: 'center' };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: HEADER_BACKGROUND_COLOR },
+        };
+        setCellStyle(cell, 'center');
+      });
+
+      sheet.getRow(1).height = HEADER_HEIGHT;
+
       const transformedData = students.map((student) => ({
         studentCode: student.studentCode,
         name: student.name,
         studentPhoneNumber: student.studentPhoneNumber || 'N/A',
         address: student.address || 'N/A',
         gender: genderConfig[student.gender?.toUpperCase()]?.label || 'N/A',
-        studentStatus:
-          studentStatusConfig[student?.studentStatus]?.label || 'N/A',
-        diligence:
-          diligenceConfig[student?.diligence.toUpperCase()]?.label || 'N/A',
+        studentStatus: studentStatusConfig[student?.studentStatus]?.label || 'N/A',
+        diligence: diligenceConfig[student?.diligence.toUpperCase()]?.label || 'N/A',
         attitude: student.attitude || 'N/A',
         amountPaid: formattedAmountByNumeric(student?.amountPaid) || 'N/A',
         collaborator: student?.collaborator?.name || 'N/A',
@@ -324,15 +328,9 @@ const Student = () => {
 
       transformedData.forEach((data) => {
         const row = sheet.addRow(data);
-        row.height = 40;
+        row.height = ROW_HEIGHT;
         row.eachCell((cell) => {
-          cell.border = {
-            top: { style: 'thin' },
-            left: { style: 'thin' },
-            bottom: { style: 'thin' },
-            right: { style: 'thin' },
-          };
-          cell.alignment = { vertical: 'middle', horizontal: 'left' };
+          setCellStyle(cell);
         });
       });
 
@@ -346,9 +344,19 @@ const Student = () => {
       anchor.download = 'Danh_Sach_Hoc_Vien.xlsx';
       anchor.click();
       window.URL.revokeObjectURL(url);
-    } else {
-      message.error('Không có dữ liệu để xuất.');
+    } catch (error) {
+      message.error('Có lỗi xảy ra khi xuất file Excel.');
     }
+  };
+
+  const setCellStyle = (cell, alignment = 'left') => {
+    cell.border = {
+      top: { style: 'thin' },
+      left: { style: 'thin' },
+      bottom: { style: 'thin' },
+      right: { style: 'thin' },
+    };
+    cell.alignment = { vertical: 'middle', horizontal: alignment };
   };
 
   const handleExcelConfirm = () => {
@@ -364,62 +372,81 @@ const Student = () => {
     });
   };
 
+  const ACTIONS = {
+    EXPORT: 'ACTION-EXPORT',
+    EDIT: 'ACTION-EDIT',
+    VIEW: 'ACTION-VIEW',
+  };
+
   const handleMenuClick = async (e, studentCode) => {
+    if (!studentCode) {
+      return message.error('Mã học viên không hợp lệ!');
+    }
+
     switch (e.key) {
-      case 'ACTION-EXPORT':
-        message.info(`Xuất thông tin Học viên có mã: ${studentCode}`);
-        break;
-      case 'ACTION-EDIT':
-        message.info(`Cập nhật Học viên có mã:  ${studentCode}`);
-        if (studentCode) {
-          navigate(`/edit-student/${studentCode}`);
-        }
-        break;
-      case 'ACTION-VIEW':
-        message.info(`Xem thông tin học viên có mã: ${studentCode}`);
-        if (studentCode) {
-          try {
-            const response = await getStudentByCode(studentCode);
-            if (response.status === 'success') {
-              setStudentDetail(response.data);
-              showDrawer();
-            }
-          } catch (error) {
-            console.error('Error fetching collaborator data:', error);
-          }
-        }
-        break;
+      case ACTIONS.EXPORT:
+        return handleExport(studentCode);
+
+      case ACTIONS.EDIT:
+        return handleEdit(studentCode);
+
+      case ACTIONS.VIEW:
+        return handleView(studentCode);
+
       default:
-        message.info('Unknown action');
+        message.info('Hành động không được hỗ trợ.');
     }
   };
 
-  const menuProps = (studentCode) => ({
-    items,
-    onClick: (e) => handleMenuClick(e, studentCode),
-  });
+  const handleExport = (studentCode) => {
+    message.info(`Xuất thông tin Học viên có mã: ${studentCode}`);
+    // Logic xuất dữ liệu tại đây (nếu cần).
+  };
+
+  const handleEdit = (studentCode) => {
+    message.info(`Cập nhật Học viên có mã: ${studentCode}`);
+    navigate(`/edit-student/${studentCode}`);
+  };
+
+  const handleView = async (studentCode) => {
+    message.info(`Xem thông tin học viên có mã: ${studentCode}`);
+    try {
+      const response = await getStudentByCode(studentCode);
+      if (response.status === 'success') {
+        setStudentDetail(response.data);
+        showDrawer();
+      } else {
+        message.error('Không thể tải thông tin học viên.');
+      }
+    } catch (error) {
+      console.error('Error fetching student data:', error);
+      message.error('Đã xảy ra lỗi khi tải thông tin học viên.');
+    }
+  };
+
+  const menuProps = (studentCode) => {
+    if (!studentCode) {
+      console.warn('Student code is undefined or null!');
+      return { items, onClick: () => message.error('Mã học viên không hợp lệ!') };
+    }
+
+    return {
+      items,
+      onClick: (e) => handleMenuClick(e, studentCode),
+    };
+  };
 
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedKeys, selectedRowData) => {
       setSelectedRowKeys(selectedKeys);
       setSelectedRows(selectedRowData);
-
-      if (selectedRowData.length !== 0) {
-        setIsVisibleDelete(true);
-      } else {
-        setIsVisibleDelete(false);
-      }
+      setIsVisibleDelete(selectedRowData.length > 0);
     },
   };
 
-  const showDrawer = () => {
-    setIsDrawerOpen(true);
-  };
-
-  const closeDrawer = () => {
-    setIsDrawerOpen(false);
-  };
+  const showDrawer = () => setIsDrawerOpen(true);
+  const closeDrawer = () => setIsDrawerOpen(false);
 
   const items = [
     {
@@ -436,6 +463,66 @@ const Student = () => {
       icon: <EditOutlined />,
     },
   ];
+  const filterOptions = {
+    diligence: [
+      { value: null, label: 'Mặc định' },
+      { value: 'poor', label: 'Kém' },
+      { value: 'average', label: 'Trung bình' },
+      { value: 'good', label: 'Khá' },
+      { value: 'excellent', label: 'Xuất sắc' },
+    ],
+    gender: [
+      { value: null, label: 'Mặc định' },
+      { value: 'female', label: 'Nữ' },
+      { value: 'male', label: 'Nam' },
+      { value: 'other', label: 'Khác' },
+    ],
+    studentStatus: [
+      { value: null, label: 'Mặc định' },
+      { value: 'BI', label: 'Trước phỏng vấn' },
+      { value: 'AI', label: 'Sau phỏng vấn' },
+      { value: 'HRB', label: 'Có giấy phép lưu trú' },
+      { value: 'FA', label: 'Đã bay' },
+    ],
+    amount: [
+      { value: null, label: 'Mặc định' },
+      { value: '10000000', label: 'Dưới 10,000,000/đ' },
+      { value: '10000000-50000000', label: 'Từ 10,000,000 đến 50,000,000/đ' },
+      { value: '50000000-100000000', label: 'Từ 50,000,000 đến 100,000,000/đ' },
+      { value: '100000000', label: 'Trên 100,000,000/đ' },
+    ],
+  };
+
+  const filters = [
+    {
+      key: 'diligenceFilter',
+      value: diligenceFilter,
+      onChange: handleDiligenceChange,
+      options: filterOptions.diligence,
+      placeholder: 'Chọn chuyên cần',
+    },
+    {
+      key: 'genderFilter',
+      value: genderFilter,
+      onChange: handleGenderChange,
+      options: filterOptions.gender,
+      placeholder: 'Chọn giới tính',
+    },
+    {
+      key: 'studentStatusFilter',
+      value: studentStatusFilter,
+      onChange: handleStudentStatusChange,
+      options: filterOptions.studentStatus,
+      placeholder: 'Chọn tình trạng',
+    },
+    {
+      key: 'amountFilter',
+      value: amountFilter,
+      onChange: handleAmountChange,
+      options: filterOptions.amount,
+      placeholder: 'Khoảng tiền',
+    },
+  ];
 
   const columns = [
     {
@@ -444,9 +531,7 @@ const Student = () => {
       key: 'studentCode',
       width: collapsed ? 170 : 140,
       sorter: (a, b) => a.studentCode.localeCompare(b.studentCode),
-      render: (text) => (
-        <span style={{ fontWeight: 500, color: theme.gray[400] }}>{text}</span>
-      ),
+      render: (text) => <span style={{ fontWeight: 500, color: theme.gray[400] }}>{text}</span>,
     },
     {
       title: 'Họ và Tên'.toUpperCase(),
@@ -461,9 +546,7 @@ const Student = () => {
       dataIndex: 'studentPhoneNumber',
       key: 'studentPhoneNumber',
       width: collapsed ? 180 : 150,
-      render: (studentPhoneNumber) => (
-        <i>{studentPhoneNumber ? studentPhoneNumber : 'Không có'}</i>
-      ),
+      render: (studentPhoneNumber) => <i>{studentPhoneNumber ? studentPhoneNumber : 'Không có'}</i>,
     },
     {
       title: 'Giới Tính'.toUpperCase(),
@@ -506,11 +589,7 @@ const Student = () => {
         const config = studentStatusConfig[studentStatus?.toUpperCase()];
         if (config) {
           return (
-            <Tag
-              key={studentStatus}
-              color={config.color}
-              style={{ padding: '2px 10px 4px 10px' }}
-            >
+            <Tag key={studentStatus} color={config.color} style={{ padding: '2px 10px 4px 10px' }}>
               <span>{config ? config.label : 'Chưa xác định'}</span>
             </Tag>
           );
@@ -525,11 +604,7 @@ const Student = () => {
       sorter: (a, b) => parseFloat(a.amountPaid) - parseFloat(b.amountPaid),
       render: (amountPaid) => {
         const formattedAmount = formattedAmountByNumeric(amountPaid);
-        return (
-          <span>
-            {formattedAmount == 0 ? 'Chưa đóng' : formattedAmount + ' đ'}
-          </span>
-        );
+        return <span>{formattedAmount == 0 ? 'Chưa đóng' : formattedAmount + ' đ'}</span>;
       },
     },
     {
@@ -539,11 +614,7 @@ const Student = () => {
       width: collapsed ? 230 : 200,
       sorter: (a, b) => a.collaborator.localeCompare(b.collaborator),
       render(collaborator) {
-        return (
-          <span style={{ color: theme.gray[500], fontWeight: 500 }}>
-            {collaborator?.name}
-          </span>
-        );
+        return <span style={{ color: theme.gray[500], fontWeight: 500 }}>{collaborator?.name}</span>;
       },
     },
     {
@@ -551,11 +622,7 @@ const Student = () => {
       key: 'action',
       render: (_, action) => (
         <Space size="middle">
-          <IconButton
-            onClick={() =>
-              handleMenuClick({ key: 'ACTION-VIEW' }, action.studentCode)
-            }
-          >
+          <IconButton onClick={() => handleMenuClick({ key: 'ACTION-VIEW' }, action.studentCode)}>
             <VisibilityOutlined />
           </IconButton>
           <Dropdown menu={menuProps(action.studentCode)}>
@@ -586,95 +653,17 @@ const Student = () => {
           gap={3}
           flexDirection={{ sm: 'column', xs: 'column', md: 'row' }}
         >
-          <SelectionOption
-            value={diligenceFilter || 'Chọn chuyên cần'}
-            onChange={handleDiligenceChange}
-            options={[
-              { value: null, label: 'Mặc định' },
-              {
-                value: 'poor',
-                label: 'Kém',
-              },
-              {
-                value: 'average',
-                label: 'Trung bình',
-              },
-              {
-                value: 'good',
-                label: 'Khá',
-              },
-              {
-                value: 'excellent',
-                label: 'Xuất sắc',
-              },
-            ]}
-          />
-
-          <SelectionOption
-            value={genderFilter || 'Chọn giới tính'}
-            onChange={handleGenderChange}
-            options={[
-              { value: null, label: 'Mặc định' },
-              { value: 'female', label: 'Nữ' },
-              { value: 'male', label: 'Nam' },
-              { value: 'other', label: 'Khác' },
-            ]}
-          />
-
-          <SelectionOption
-            value={studentStatusFilter || 'Chọn tình trạng'}
-            onChange={handleStudentStatusChange}
-            options={[
-              { value: null, label: 'Mặc định' },
-              {
-                value: 'BI',
-                label: 'Trước phỏng vấn',
-              },
-              {
-                value: 'AI',
-                label: 'Sau phỏng vấn',
-              },
-              {
-                value: 'HRB',
-                label: 'Có giấy phép lưu trú',
-              },
-              {
-                value: 'FA',
-                label: 'Đã bay',
-              },
-            ]}
-          />
-
-          <SelectionOption
-            value={amountFilter || 'Khoảng tiền'}
-            onChange={handleAmountChange}
-            options={[
-              { value: null, label: 'Mặc định' },
-              {
-                value: '10000000',
-                label: 'Dưới 10,000,000/đ',
-              },
-              {
-                value: '10000000-50000000',
-                label: 'Từ 10,000,000 đến 50,000,000/đ',
-              },
-              {
-                value: '50000000-100000000',
-                label: 'Từ 50,000,000 đến 100,000,000/đ',
-              },
-              {
-                value: '100000000',
-                label: 'Trên 100,000,000/đ',
-              },
-            ]}
-          />
+          {filters.map((filter) => (
+            <SelectionOption
+              key={filter.key}
+              value={filter.value || filter.placeholder}
+              onChange={filter.onChange}
+              options={filter.options}
+            />
+          ))}
 
           <Button variant="text" onClick={handleResetFilters}>
-            <Typography
-              px="4px"
-              sx={{ textTransform: 'none' }}
-              color={theme.gray[500]}
-            >
+            <Typography px="4px" sx={{ textTransform: 'none' }} color={theme.gray[500]}>
               Clear
             </Typography>
             <RestoreOutlined sx={{ color: theme.gray[500] }} />
@@ -771,21 +760,14 @@ const Student = () => {
           page={page}
           limit={limit}
           total={totalStudents}
-          onPageChange={(newPage, newPageSize) =>
-            handlePageChange(newPage, newPageSize)
-          }
+          onPageChange={(newPage, newPageSize) => handlePageChange(newPage, newPageSize)}
           loading={loading}
           showExpand={false}
         />
       </BoxCard>
 
       <div>
-        <Drawer
-          width={640}
-          placement="right"
-          onClose={closeDrawer}
-          open={isDrawerOpen}
-        >
+        <Drawer width={640} placement="right" onClose={closeDrawer} open={isDrawerOpen}>
           <Row>
             <Col span={22}>
               <Label>Thông tin chi tiết học viên</Label>
@@ -823,52 +805,31 @@ const Student = () => {
           </Typography>
           <Row>
             <Col span={12}>
-              <DescriptionItem
-                title="Mã học viên"
-                content={studentDetail?.studentCode}
-              />
+              <DescriptionItem title="Mã học viên" content={studentDetail?.studentCode} />
             </Col>
           </Row>
           <Row>
             <Col span={12}>
-              <DescriptionItem
-                title="Tên học viên"
-                content={studentDetail?.name}
-              />
+              <DescriptionItem title="Tên học viên" content={studentDetail?.name} />
             </Col>
             <Col span={12}>
-              <DescriptionItem
-                title="Giới tính"
-                content={
-                  genderConfig[studentDetail?.gender.toUpperCase()]?.label
-                }
-              />
+              <DescriptionItem title="Giới tính" content={genderConfig[studentDetail?.gender.toUpperCase()]?.label} />
             </Col>
           </Row>
           <Row>
             <Col span={12}>
               <DescriptionItem
                 title="Ngày sinh"
-                content={
-                  studentDetail?.dayOfBirth
-                    ? format(new Date(studentDetail?.dayOfBirth), 'dd-MM-yyyy')
-                    : ''
-                }
+                content={studentDetail?.dayOfBirth ? format(new Date(studentDetail?.dayOfBirth), 'dd-MM-yyyy') : ''}
               />
             </Col>
             <Col span={12}>
-              <DescriptionItem
-                title="CCCD/CMND"
-                content={studentDetail?.identityNumber || 'Chưa có'}
-              />
+              <DescriptionItem title="CCCD/CMND" content={studentDetail?.identityNumber || 'Chưa có'} />
             </Col>
           </Row>
           <Row>
             <Col span={24}>
-              <DescriptionItem
-                title="Ghi chú"
-                content={studentDetail?.note || 'Không có'}
-              />
+              <DescriptionItem title="Ghi chú" content={studentDetail?.note || 'Không có'} />
             </Col>
           </Row>
           <Divider />
@@ -891,20 +852,13 @@ const Student = () => {
             <Col span={12}>
               <DescriptionItem
                 title="Tình trạng học viên"
-                content={
-                  studentStatusConfig[
-                    studentDetail?.studentStatus.toUpperCase()
-                  ]?.label || 'Chưa có'
-                }
+                content={studentStatusConfig[studentDetail?.studentStatus.toUpperCase()]?.label || 'Chưa có'}
               />
             </Col>
             <Col span={12}>
               <DescriptionItem
                 title="Số tiền đã đóng"
-                content={
-                  formattedAmountByNumeric(studentDetail?.amountPaid) + ' đ' ||
-                  'Chưa có'
-                }
+                content={formattedAmountByNumeric(studentDetail?.amountPaid) + ' đ' || 'Chưa có'}
               />
             </Col>
           </Row>
@@ -912,17 +866,11 @@ const Student = () => {
             <Col span={12}>
               <DescriptionItem
                 title="Chuyên cần"
-                content={
-                  diligenceConfig[studentDetail?.diligence.toUpperCase()]
-                    ?.label || 'Chưa có'
-                }
+                content={diligenceConfig[studentDetail?.diligence.toUpperCase()]?.label || 'Chưa có'}
               />
             </Col>
             <Col span={12}>
-              <DescriptionItem
-                title="Thái độ"
-                content={studentDetail?.attitude || 'NA'}
-              />
+              <DescriptionItem title="Thái độ" content={studentDetail?.attitude || 'NA'} />
             </Col>
           </Row>
           <Row>
@@ -961,16 +909,11 @@ const Student = () => {
             <Col span={12}>
               <DescriptionItem
                 title="Mã người giới thiệu"
-                content={
-                  studentDetail?.collaborator?.collaboratorCode || 'Chưa có'
-                }
+                content={studentDetail?.collaborator?.collaboratorCode || 'Chưa có'}
               />
             </Col>
             <Col span={12}>
-              <DescriptionItem
-                title="Tên người giới thiệu"
-                content={studentDetail?.collaborator?.name || 'Chưa có'}
-              />
+              <DescriptionItem title="Tên người giới thiệu" content={studentDetail?.collaborator?.name || 'Chưa có'} />
             </Col>
           </Row>
           <Row>
@@ -981,10 +924,7 @@ const Student = () => {
               />
             </Col>
             <Col span={12}>
-              <DescriptionItem
-                title="Số điện thoại cha mẹ"
-                content={studentDetail?.parentPhoneNumber || 'Chưa có'}
-              />
+              <DescriptionItem title="Số điện thoại cha mẹ" content={studentDetail?.parentPhoneNumber || 'Chưa có'} />
             </Col>
           </Row>
         </Drawer>
