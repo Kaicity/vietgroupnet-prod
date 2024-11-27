@@ -6,7 +6,7 @@ const phoneRegex = /^\+?(\d{1,4})?[-.\s]?(\d{2,4})[-.\s]?(\d{3,4})[-.\s]?(\d{3,4
 export const OrderSchema = yup.object().shape({
   unionName: yup.string().required('Tên Nghiệp Đoàn là bắt buộc').max(50, 'Tên không được vượt quá 50 ký tự'),
   companyName: yup.string().required('Tên Công Ty là bắt buộc').max(50, 'Tên không được vượt quá 50 ký tự'),
-  companyAddress: yup.string().required('Địa Chỉ là bắt buộc').max(50, 'Địa chỉ không được vượt quá 50 ký tự'),
+  companyAddress: yup.string().required('Địa Chỉ là bắt buộc').max(150, 'Địa chỉ không được vượt quá 50 ký tự'),
   orderName: yup.string().required('Tên Đơn Hàng là bắt buộc').max(50, 'Tên không được vượt quá 50 ký tự'),
   interviewStatus: yup.string().required('Trạng thái là bắt buộc'),
   interviewFormat: yup.string().required('Hình thức là bắt buộc'),
@@ -16,21 +16,29 @@ export const OrderSchema = yup.object().shape({
   interviewDate: yup
     .string()
     .required('Ngày phỏng vấn là bắt buộc')
-    .test('is-future-date', 'Ngày phỏng vấn phải lớn hơn hôm nay', (value) => {
-      if (!value) return false;
+    .test('is-today-or-future-date', 'Ngày phỏng vấn phải là hôm nay hoặc lớn hơn hôm nay', (value) => {
+      if (!value) return false; // Trường hợp không có giá trị
       const today = new Date();
+      const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()); // Bỏ giờ
       const inputDate = new Date(value);
-      return inputDate > today;
+      return inputDate >= todayStart; // Kiểm tra ngày >= hôm nay
     }),
+
   departureDate: yup
     .string()
     .required('Ngày xuất cảnh là bắt buộc')
-    .test('is-future-date', 'Ngày xuất cảnh phải lớn hơn hôm nay', (value) => {
-      if (!value) return false;
-      const today = new Date();
-      const inputDate = new Date(value);
-      return inputDate > today;
+    .test('is-after-interview-date', 'Ngày xuất cảnh phải lớn hơn ngày phỏng vấn', function (value) {
+      if (!value) return false; // Kiểm tra nếu `departureDate` không có giá trị
+      const { interviewDate } = this.parent; // Lấy giá trị `interviewDate` từ cùng một đối tượng biểu mẫu
+      if (!interviewDate) return false; // Nếu không có `interviewDate`, trả về lỗi
+
+      const depDate = new Date(value);
+      const intDate = new Date(interviewDate);
+
+      // So sánh departureDate và interviewDate
+      return depDate > intDate; // `departureDate` phải lớn hơn `interviewDate`
     }),
+
   male: yup
     .string()
     .required('Số lượng Nam là bắt buộc')
@@ -57,7 +65,6 @@ export const OrderSchema = yup.object().shape({
       const { minAge } = this.parent;
       return value > minAge;
     }),
-  jobDescription: yup.string().required('Mô Tả Công Việc là bắt buộc'),
-  phoneNumber: yup.string().matches(phoneRegex, 'Số điện thoại không hợp lệ').required('Số điện thoại là bắt buộc'),
+  jobDescription: yup.string().required('Mô Tả Công Việc là bắt buộc').max(300, 'Nôi dung không được vượt quá 50 ký tự'),
+  vision: yup.string().required('Thị Lực là bắt buộc'),
 });
-

@@ -144,13 +144,10 @@ const OrderForm = () => {
   // hanhle submid
   const handleFormSubmit = async (values, { resetForm }) => {
     console.log('Submitted values:', values); // Kiểm tra giá trị
-    console.log('Errors:', errors); // Kiểm tra lỗi
-
     try {
       let response;
 
       if (isEdit) {
-        // setCart(orderDetail.order.students);
         response = await updateOrder(values.orderCode, values);
       } else {
         response = await createOrder(values);
@@ -200,51 +197,51 @@ const OrderForm = () => {
         content={content}
         handleCloseSnackbar={() => setIsShowMessage(false)}
       />
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={OrderInitialValues}
-        validationSchema={OrderSchema}
-      >
-        {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit, setFieldValue, isValid}) => {
+      <Formik onSubmit={handleFormSubmit} initialValues={OrderInitialValues} validationSchema={OrderSchema}>
+        {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit, setFieldValue, isValid }) => {
           useEffect(() => {
-            if (orderDetail) {
-              //Format ngày tháng năm từ db
-              const formattedDate = orderDetail.order.departureDate
+            if (orderDetail?.order) {
+              // Kiểm tra nếu `orderDetail` và `orderDetail.order` không null/undefined
+              // Format ngày tháng năm từ db
+              const formattedDate = orderDetail.order?.departureDate
                 ? format(new Date(orderDetail.order.departureDate), 'yyyy-MM-dd')
                 : '';
 
-              const formattedInterDate = orderDetail.order.interviewDate
+              const formattedInterDate = orderDetail.order?.interviewDate
                 ? format(new Date(orderDetail.order.interviewDate), 'yyyy-MM-dd')
                 : '';
+
               setValues({
                 orderName: orderDetail.order?.orderName || '',
-                quanlity: orderDetail.order.quanlity || '',
+                quanlity: orderDetail.order?.quanlity || '',
                 interviewDate: formattedInterDate || '',
-                unionName: orderDetail.order.unionName || '',
-                companyName: orderDetail.order.companyName || '',
-                companyAddress: orderDetail.order.companyAddress || '',
-                male: orderDetail.order.male || '',
-                female: orderDetail.order.female || '',
-                minAge: orderDetail.order.minAge || '',
-                maxAge: orderDetail.order.maxAge || '',
-                salary: orderDetail.order.salary || '',
-                interviewStatus: orderDetail.order.interviewStatus || '',
-                eduRequirements: orderDetail.order.eduRequirements || '',
+                unionName: orderDetail.order?.unionName || '',
+                companyName: orderDetail.order?.companyName || '',
+                companyAddress: orderDetail.order?.companyAddress || '',
+                male: orderDetail.order?.male || '',
+                female: orderDetail.order?.female || '',
+                minAge: orderDetail.order?.minAge || '',
+                maxAge: orderDetail.order?.maxAge || '',
+                salary: orderDetail.order?.salary || '',
+                interviewStatus: orderDetail.order?.interviewStatus || '',
+                eduRequirements: orderDetail.order?.eduRequirements || '',
                 departureDate: formattedDate || '',
-                jobDescription: orderDetail.order.jobDescription || '',
-                experience: orderDetail.order.experience || '',
-                physicalStrength: orderDetail.order.physicalStrength || '',
-                dominantHand: orderDetail.order.dominantHand || '',
-                insurance: orderDetail.order.insurance || '',
-                vision: orderDetail.order.vision || '',
-                maritalStatus: orderDetail.order.maritalStatus || '',
-                notes: orderDetail.order.notes || '',
-                visaTypes: orderDetail.order.visaTypes || '',
-                interviewFormat: orderDetail.order.interviewFormat || '',
+                jobDescription: orderDetail.order?.jobDescription || '',
+                experience: orderDetail.order?.experience || '',
+                physicalStrength: orderDetail.order?.physicalStrength || '',
+                dominantHand: orderDetail.order?.dominantHand || '',
+                insurance: orderDetail.order?.insurance || '',
+                vision: orderDetail.order?.vision || '',
+                maritalStatus: orderDetail.order?.maritalStatus || '',
+                notes: orderDetail.order?.notes || '',
+                visaTypes: orderDetail.order?.visaTypes || '',
+                interviewFormat: orderDetail.order?.interviewFormat || '',
               });
-              setFieldValue('orderCode', orderDetail.order.orderCode);
+
+              setFieldValue('orderCode', orderDetail.order?.orderCode || '');
             }
           }, [orderDetail, setFieldValue]);
+
           return (
             <form onSubmit={handleSubmit}>
               <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={{ xs: 2, sm: 2.5, md: 3 }} mx="0px">
@@ -504,15 +501,15 @@ const OrderForm = () => {
 
                         <Grid item xs={12} md={12} mb={'50px'}>
                           <CustomTextField
-                            label="Đ���a Chỉ Nghiệp Đoàn"
+                            label="Địa Chỉ Nghiệp Đoàn"
                             name="companyAddress"
                             placeholder="33 bùi quang là"
                             value={values.companyAddress}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             onInput={(e) => {
-                              if (e.target.value.length > 50) {
-                                e.target.value = e.target.value.slice(0, 50); // Cắt chuỗi nếu quá 50 ký tự
+                              if (e.target.value.length > 150) {
+                                e.target.value = e.target.value.slice(0, 150); // Cắt chuỗi nếu quá 50 ký tự
                               }
                             }}
                             error={touched.companyAddress && errors.companyAddress}
@@ -556,7 +553,16 @@ const OrderForm = () => {
                           {' '}
                           Thông Tin Nghành Nghề
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" marginBottom={5}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          marginBottom={5}
+                          sx={{
+                            fontSize: typography.fontSize.sizeL,
+                            mb: { xs: 2, sm: 2.5 },
+                            mr: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
+                          }}
+                        >
                           Vui lòng cho biết Những yêu cầu của ứng viên để chúng tôi có thể phân loại và xử lý thông tin
                           đơn hàng một cách chính xác hơn.
                         </Typography>
@@ -780,6 +786,11 @@ const OrderForm = () => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             fullWidth
+                            onInput={(e) => {
+                              if (e.target.value > 300) {
+                                e.target.value = e.target.value.slice(0, 300);
+                              }
+                            }}
                             error={touched.jobDescription && Boolean(errors.jobDescription)}
                             helperText={touched.jobDescription && errors.jobDescription}
                             multiline
@@ -841,7 +852,31 @@ const OrderForm = () => {
                                   placeholder="Ví dụ:10/10"
                                   value={values.vision}
                                   onChange={handleChange}
+                                  onInput={(e) => {
+                                    // Lấy giá trị hiện tại từ input
+                                    let value = e.target.value;
+
+                                    // Nếu giá trị trống, không thay đổi gì
+                                    if (value === '') {
+                                      return;
+                                    }
+
+                                    // Nếu giá trị chỉ chứa một chữ số, tự động thêm "/10"
+                                    if (/^\d$/.test(value)) {
+                                      value += '/10';
+                                    }
+
+                                    // Nếu giá trị có nhiều ký tự, chỉ giữ lại chữ số đầu tiên và thêm "/10"
+                                    else if (value.length > 2) {
+                                      value = value.slice(0, 1) + '/10'; // Giới hạn chỉ cho phép 1 chữ số và "/10"
+                                    }
+
+                                    // Cập nhật giá trị của input
+                                    e.target.value = value;
+                                  }}
                                   onBlur={handleBlur}
+                                  error={touched.vision && Boolean(errors.vision)}
+                                  helperText={touched.vision && errors.vision}
                                   fullWidth
                                 />
                               </Grid>
@@ -967,9 +1002,10 @@ const OrderForm = () => {
                             <CustomTextQuill
                               readOnly={false}
                               toolbarVisible={true}
-                              label={'Tình trạng học tập'}
+                              label={'Các phụ cấp và phương tiện'}
                               value={values.notes}
                               onChange={(content) => setFieldValue('notes', content)}
+                              charLimit={1500} // Giới hạn ký tự
                             />
                           </Grid>
                         </Grid>
@@ -1116,7 +1152,7 @@ const OrderForm = () => {
                             lg: '44px',
                           },
                         }}
-                        disabled={ loading}
+                        disabled={!isValid || loading}
                       >
                         {loading ? (
                           <CircularProgress size={24} sx={{ color: 'white' }} />

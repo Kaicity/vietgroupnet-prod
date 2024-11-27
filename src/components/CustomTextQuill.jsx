@@ -14,6 +14,7 @@ const CustomTextQuill = ({
   error = false,
   helperText = '',
   placeholder = 'Nhập nội dung...',
+  charLimit = 1500, // Giới hạn ký tự mặc định
 }) => {
   const [inputValue, setInputValue] = useState(value);
 
@@ -23,8 +24,15 @@ const CustomTextQuill = ({
   );
 
   const handleChange = (newValue) => {
-    setInputValue(newValue);
-    debouncedOnChange(newValue);
+    // Kiểm tra và giới hạn số ký tự
+    if (newValue.length <= charLimit) {
+      setInputValue(newValue);
+      debouncedOnChange(newValue);
+    } else {
+      // Giới hạn nếu vượt quá 120 ký tự
+      setInputValue(newValue.slice(0, charLimit));
+      debouncedOnChange(newValue.slice(0, charLimit));
+    }
   };
 
   useEffect(() => {
