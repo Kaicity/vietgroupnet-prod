@@ -4,19 +4,9 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 
-const BasicDatePicker = ({
-  value,
-  onChange,
-  error,
-  helperText,
-  label,
-  width,
-  padding,
-}) => {
+const BasicDatePicker = ({ value, onChange, error, helperText, label }) => {
   const handleDateChange = (newValue) => {
-    const formattedDate = newValue
-      ? dayjs(newValue).format('YYYY-MM-DD')
-      : null;
+    const formattedDate = newValue ? dayjs(newValue).format('YYYY-MM-DD') : null;
     onChange(formattedDate);
   };
 
