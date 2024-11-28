@@ -1089,6 +1089,7 @@ const OrderForm = () => {
                             xs: '8px',
                             sm: '10px',
                           },
+                          textTransform: 'none',
                         }}
                       >
                         Thêm học viên
@@ -1151,8 +1152,10 @@ const OrderForm = () => {
                             md: '40px',
                             lg: '44px',
                           },
+                          textTransform: 'none',
+
                         }}
-                        disabled={!isValid || loading}
+                        disabled={loading}
                       >
                         {loading ? (
                           <CircularProgress size={24} sx={{ color: 'white' }} />
@@ -1186,6 +1189,8 @@ const OrderForm = () => {
                             xs: '8px',
                             sm: '10px',
                           },
+                          textTransform: 'none',
+
                         }}
                         onClick={() => {
                           navigate('/order');
