@@ -36,17 +36,17 @@ const ProfileCard = React.memo(() => {
   // Ghi nhớ các giá trị dựa trên userData
   const collaboratorInfo = useMemo(
     () => ({
-      collaboratorCode: userData.collaboratorCode,
-      name: userData.name,
-      role: roleConfig[userData.role?.roleName?.toUpperCase()]?.label,
-      referrerName: userData.referrer ? userData.referrer.name : 'Không có',
-      provinceName: userData.province?.provinceName,
+      collaboratorCode: userData?.collaboratorCode,
+      name: userData?.name,
+      role: roleConfig[userData?.role?.roleName?.toUpperCase()]?.label,
+      referrerName: userData?.referrer ? userData?.referrer?.name : 'Không có',
+      provinceName: userData?.province?.provinceName,
       bankCode: userData.bank?.bankCode || 'Không có',
-      identityNumber: userData.identityNumber,
-      email: userData.email,
-      phone: userData.phone || 'Không có',
-      dayOfBirth: userData.dayOfBith ? new Date(userData.dayOfBith).toISOString().split('T')[0] : 'Không có',
-      address: userData.address || 'Không có',
+      identityNumber: userData?.identityNumber,
+      email: userData?.email,
+      phone: userData?.phone || 'Không có',
+      dayOfBirth: userData?.dayOfBith ? new Date(userData.dayOfBith).toISOString().split('T')[0] : 'Không có',
+      address: userData?.address || 'Không có',
     }),
     [userData],
   );
@@ -126,7 +126,7 @@ const ProfileCard = React.memo(() => {
                   textAlign: 'center',
                 }}
               >
-                {collaboratorInfo.collaboratorCode} - {collaboratorInfo.name}
+                {collaboratorInfo?.name}
               </Typography>
               <Divider />
 
@@ -161,7 +161,16 @@ const ProfileCard = React.memo(() => {
               <br />
               <Card.Meta
                 title={
-                  <Typography fontSize={typography.fontSize.sizeXL} fontWeight="bold">
+                  <Typography
+                    fontSize={typography.fontSize.sizeXL}
+                    fontWeight="bold"
+                    sx={{
+                      fontSize: typography.fontSize.sizeXL,
+                      fontWeight: 'bold',
+                      wordBreak: 'break-word',
+                      whiteSpace: 'normal',
+                    }}
+                  >
                     Thông tin cán bộ công nhân viên
                   </Typography>
                 }
@@ -169,13 +178,13 @@ const ProfileCard = React.memo(() => {
               <Divider />
 
               <InfoItem icon={ManageAccountsOutlined} label="Người quản lý: " value={collaboratorInfo.referrerName} />
-              <InfoItem icon={Business} label="Chi nhánh: " value={collaboratorInfo.provinceName} />
-              <InfoItem icon={AccountBalanceOutlined} label="Tài khoản Ngân Hàng: " value={collaboratorInfo.bankCode} />
-              <InfoItem icon={PermIdentityOutlined} label="CMTND/CCCD/HC: " value={collaboratorInfo.identityNumber} />
+              <InfoItem icon={Business} label="Nhánh: " value={collaboratorInfo.provinceName} />
+              <InfoItem icon={AccountBalanceOutlined} label="STK: " value={collaboratorInfo.bankCode} />
+              <InfoItem icon={PermIdentityOutlined} label="CCCD: " value={collaboratorInfo.identityNumber} />
               <InfoItem icon={EmailOutlined} label="Email: " value={collaboratorInfo.email} />
-              <InfoItem icon={PhoneAndroidOutlined} label="Điện thoại: " value={collaboratorInfo.phone} />
-              <InfoItem icon={CalendarMonthOutlined} label="Ngày Sinh" value={collaboratorInfo.dayOfBirth} />
-              <InfoItem icon={LocationOnOutlined} label="Địa Chỉ" value={collaboratorInfo.address} />
+              <InfoItem icon={PhoneAndroidOutlined} label="Số điện thoại: " value={collaboratorInfo.phone} />
+              <InfoItem icon={CalendarMonthOutlined} label="Ngày sinh: " value={collaboratorInfo.dayOfBirth} />
+              <InfoItem icon={LocationOnOutlined} label="Địa chỉ:" value={collaboratorInfo.address} />
             </Box>
           </Card>
         </Col>

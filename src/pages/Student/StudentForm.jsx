@@ -33,6 +33,7 @@ import { transformMoneyToNumeric } from '../../helper';
 import { formattedAmountByNumeric } from '../../helper/moneyConvert.js';
 import CustomTextQuill from '../../components/CustomTextQuill.jsx';
 import BoxCard from '../../components/Card.jsx';
+import typography from '../../utils/typography.js';
 
 const { Dragger } = Upload;
 
@@ -429,30 +430,33 @@ const StudentForm = () => {
                         helperText={touched.address && errors.address}
                       />
                     </Grid>
-
-                    <Grid item xs={16} display="flex" justifyContent="flex-end">
-                      <Button
-                        variant="contained"
-                        type="submit"
-                        sx={{
-                          width: '100%',
-                          maxWidth: '200px',
-                          backgroundColor: theme.primary[500],
-                        }}
-                        disabled={loading}
-                      >
-                        {loading ? (
-                          <CircularProgress size={24} sx={{ color: 'white' }} />
-                        ) : isEdit ? (
-                          'Cập nhật thông tin'
-                        ) : (
-                          'Lưu thông tin'
-                        )}
-                      </Button>
-                    </Grid>
                   </Grid>
                 </Box>
               </BoxCard>
+              <Grid item xs={16} display="flex" justifyContent="flex-end">
+                <Button
+                  variant="contained"
+                  type="submit"
+                  sx={{
+                    width: '100%',
+                    maxWidth: '200px',
+                    backgroundColor: theme.primary[500],
+                  }}
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <CircularProgress size={24} sx={{ color: 'white' }} />
+                  ) : isEdit ? (
+                    <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
+                      Cập nhật thông tin
+                    </Typography>
+                  ) : (
+                    <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
+                      Lưu thông tin
+                    </Typography>
+                  )}
+                </Button>
+              </Grid>
             </form>
           );
         }}

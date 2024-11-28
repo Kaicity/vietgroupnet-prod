@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Divider, Grid, IconButton, Paper, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Box, Divider, Grid, IconButton, Typography } from '@mui/material';
 import Header from '../../components/Header';
 import theme from '../../utils/theme';
-import userDefault from '../../assets/userDefault.png';
 import genderOptions from '../../constants/genderOptions.js';
 import { format } from 'date-fns';
 import InfoItem from '../Dashboard/ProfileCard/InforItem';
@@ -30,13 +29,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getCollaboratorByCode } from '../../api/collaborator';
 import { Avatar } from 'antd';
 import { getpayHistoryIsUser } from '../../api/payHistory.js';
-import { formattedAmountByNumeric, transformMoneyToNumeric } from '../../helper/moneyConvert.js';
+import { formattedAmountByNumeric } from '../../helper/moneyConvert.js';
 import { statusConfig } from '../../constants/enums/collaborator-enum.js';
 
 const CollaboratorDetail = () => {
   const [collaborator, setCollaborator] = useState(null);
   const [payCollaborators, setPayCollaborator] = useState([]);
-  const [studentQty, setStudentQty] = useState(0);
 
   const navigate = useNavigate();
   const { id } = useParams();
@@ -63,7 +61,6 @@ const CollaboratorDetail = () => {
     const response = await getpayHistoryIsUser({
       page: 1,
       limit: 20,
-      collaboratorCode: id,
     });
 
     if (response.data && Array.isArray(response.data.payHistories)) {
@@ -172,8 +169,8 @@ const CollaboratorDetail = () => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   borderRadius: '50%',
-                  width: { xs: '150px', sm: '200px' },
-                  height: { xs: '150px', sm: '200px' },
+                  width: '200px',
+                  height: '200px',
                   margin: '0 auto',
                   overflow: 'hidden',
                   background: theme.gradient.blueGreen,
@@ -200,7 +197,7 @@ const CollaboratorDetail = () => {
                 >
                   <Avatar size={180} src={collaborator?.imgUrl}>
                     <span style={{ fontSize: '50px' }}>
-                      {!collaborator?.imgUrl && collaborator?.name?.charAt(0).toUpperCase()}
+                      {!collaborator?.imgUrl && collaborator?.name?.charAt(0)?.toUpperCase()}
                     </span>
                   </Avatar>
                 </Box>
@@ -247,7 +244,7 @@ const CollaboratorDetail = () => {
                       : Info
                   }
                   label="Trạng Thái: "
-                  value={collaborator ? statusConfig[collaborator?.status.toUpperCase()]?.label : 'Chưa có'}
+                  value={collaborator ? statusConfig[collaborator?.status?.toUpperCase()]?.label : 'Chưa có'}
                 />
               </Box>
             </Box>

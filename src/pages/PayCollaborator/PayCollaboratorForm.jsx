@@ -32,6 +32,7 @@ import { roleConfig } from '../../constants/enums/collaborator-enum';
 import { getCollaboratorByCode } from '../../api/collaborator';
 import { CheckCircleOutline } from '@mui/icons-material';
 import { Modal } from 'antd';
+import typography from '../../utils/typography';
 
 const PayCollaboratorForm = () => {
   const [isShowMessage, setIsShowMessage] = useState(false);
@@ -584,7 +585,9 @@ const PayCollaboratorForm = () => {
                             <CircularProgress size={24} sx={{ color: 'white' }} />
                           ) : (
                             <>
-                              <span>Xác nhận</span>
+                              <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
+                                Xác nhận
+                              </Typography>
                               <CheckCircleOutline />
                             </>
                           )}
@@ -616,7 +619,9 @@ const PayCollaboratorForm = () => {
                     setVisibleFormIsAdmin(false);
                   }}
                 >
-                  Hoàn tác
+                  <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
+                    Hoàn tác
+                  </Typography>
                 </Button>
 
                 <Button
@@ -632,9 +637,13 @@ const PayCollaboratorForm = () => {
                   {loading ? (
                     <CircularProgress size={24} sx={{ color: 'white' }} />
                   ) : isEdit ? (
-                    'Cập nhật thông tin'
+                    <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
+                      'Cập nhật thông tin'
+                    </Typography>
                   ) : (
-                    'Lưu thông tin'
+                    <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
+                      Lưu thông tin
+                    </Typography>
                   )}
                 </Button>
               </Grid>

@@ -37,13 +37,12 @@ const DataTable = ({
           showTotal: (total) => `Tổng ${total} mục`,
         }
       }
-      // scroll={
-      //   isScroll && {
-      //     y: 470,
-      //     x: 'max-content',
-      //   }
-      // }
-      scroll={{ x: 'max-content' }}
+      scroll={
+        isScroll && {
+          y: 470,
+          x: 'max-content',
+        }
+      }
       style={{
         height: '100%',
       }}

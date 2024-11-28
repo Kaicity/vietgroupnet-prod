@@ -809,12 +809,14 @@ const Student = () => {
             Đánh giá học tập
           </Typography>
           <Row>
-            <Col span={12}>
+            <Col span={14}>
               <DescriptionItem
                 title="Tình trạng học viên"
-                content={studentStatusConfig[studentDetail?.studentStatus.toUpperCase()]?.label || 'Chưa có'}
+                content={studentStatusConfig[studentDetail?.studentStatus?.toUpperCase()]?.label || 'Chưa có'}
               />
             </Col>
+          </Row>
+          <Row>
             <Col span={12}>
               <DescriptionItem
                 title="Số tiền đã đóng"
@@ -826,11 +828,11 @@ const Student = () => {
             <Col span={12}>
               <DescriptionItem
                 title="Chuyên cần"
-                content={diligenceConfig[studentDetail?.diligence.toUpperCase()]?.label || 'Chưa có'}
+                content={diligenceConfig[studentDetail?.diligence?.toUpperCase()]?.label || 'Chưa có'}
               />
             </Col>
             <Col span={12}>
-              <DescriptionItem title="Thái độ" content={studentDetail?.attitude || 'NA'} />
+              <DescriptionItem title="Thái độ" content={studentDetail?.attitude || 'Chưa có'} />
             </Col>
           </Row>
           <Row>

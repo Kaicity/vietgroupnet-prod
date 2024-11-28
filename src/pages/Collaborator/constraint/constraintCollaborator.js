@@ -46,7 +46,7 @@ export const collaboratorSchema = yup.object().shape({
     .required('Ngày Sinh là bắt buộc')
     .test('is-valid-date', 'Ngày Sinh không hợp lệ', (value) => {
       const date = dayjs(value, 'YYYY-MM-DD', true);
-      return date.isValid() && date.year() >= 1940 && date.year() <= 2024;
+      return date.isValid() && date.year() >= 1920 && date.year() <= 2005;
     }),
 
   password: yup
