@@ -5,17 +5,18 @@ import BoxCard from '../../components/Card';
 import DataTable from '../../components/DataTable';
 import { useContext } from 'react';
 import { AppContext } from '../../context/AppProvider';
-import { deletepayHistory, getpayHistoryIsAdmin } from '../../api/payHistory';
+import { deletepayHistory, getpayHistoryIsAdmin, updatepayHistory } from '../../api/payHistory';
 import theme from '../../utils/theme';
 import { format } from 'date-fns';
 import { formattedAmountByNumeric } from '../../helper/moneyConvert';
 import { payCollaboratorStatus } from '../../constants/enums/payCollaborator-enum';
-import { Dropdown, Input, message, Modal, Space, Tag } from 'antd';
+import { Dropdown, Input, message, Modal, Radio, Space, Tag } from 'antd';
 import { blinkBackgroundAnimation } from '../../animation/shake';
 import { AddCircleOutlineOutlined, DeleteOutline, EditOutlined, MoreVert } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import typography from '../../utils/typography';
 import Message from '../../components/Message';
+import payCollaboratorStatusOPtions from '../../constants/payCollaboratorStatusOptions';
 
 const { Search } = Input;
 
@@ -85,28 +86,25 @@ const PayCollaborator = () => {
     getDataPayCollaborator(newPage, newLimit);
   };
 
-  const handleMenuClick = async (e, payHistoryCode) => {
+  const handleMenuClick = async (e, payHistoryCode, status) => {
     switch (e.key) {
-      case 'ACTION-SEE':
-        message.info(`Cập nhật Hoa hồng có mã:  ${payHistoryCode}`);
-        if (payHistoryCode) {
-          navigate(`/edit-pay-collaborator/${payHistoryCode}`);
-        }
+      case 'ACTION-EDIT-STATUS':
+        handleEditStatus(payHistoryCode, status);
         break;
       default:
         message.info('Unknown action');
     }
   };
 
-  const menuProps = (payHistoryCode) => ({
+  const menuProps = (payHistoryCode, status) => ({
     items,
-    onClick: (e) => handleMenuClick(e, payHistoryCode),
+    onClick: (e) => handleMenuClick(e, payHistoryCode, status),
   });
 
   const items = [
     {
-      label: 'Xem',
-      key: 'ACTION-SEE',
+      label: 'Cập nhật trạng thái',
+      key: 'ACTION-EDIT-STATUS',
       icon: <EditOutlined />,
     },
   ];
@@ -123,6 +121,50 @@ const PayCollaborator = () => {
         setIsVisibleDelete(false);
       }
     },
+  };
+
+  const handleEditStatus = (payHistoryCode, status) => {
+    let selectedStatus = null;
+
+    const setStatusValueChange = (e) => {
+      selectedStatus = e.target.value;
+    };
+
+    Modal.confirm({
+      title: `Cập nhật hoa hồng có mã ${payHistoryCode}`,
+      content: (
+        <>
+          <Radio.Group onChange={setStatusValueChange}>
+            <Space direction="vertical">
+              {payCollaboratorStatusOPtions.map((statusOption) => (
+                <Radio disabled={status === statusOption.value} key={statusOption.value} value={statusOption.value}>
+                  {statusOption.label}
+                </Radio>
+              ))}
+            </Space>
+          </Radio.Group>
+        </>
+      ),
+      async onOk() {
+        try {
+          const payHistoryData = { status: selectedStatus };
+
+          const response = await updatepayHistory(payHistoryCode, payHistoryData);
+
+          if (response.status === 'success') {
+            setSeverity('success');
+            setIsShowMessage(true);
+            setContent('Cập nhật chức vụ thành công');
+            getDataPayCollaborator();
+          }
+        } catch (error) {
+          console.error(error.message);
+        }
+      },
+      onCancel() {
+        return;
+      },
+    });
   };
 
   const confirmDelete = () => {
@@ -264,28 +306,28 @@ const PayCollaborator = () => {
       width: collapsed ? 180 : 160,
       render: (updateDate) => <span>{updateDate ? format(new Date(updateDate), 'dd-MM-yyyy') : 'Chưa xác định'}</span>,
     },
-    // {
-    //   title: 'Hành Động'.toUpperCase(),
-    //   key: 'action',
-    //   width: 120,
-    //   render: (_, action) => (
-    //     <div
-    //       style={{
-    //         display: 'flex',
-    //         alignItems: 'center',
-    //         justifyContent: 'center',
-    //       }}
-    //     >
-    //       <Space size="middle">
-    //         <Dropdown menu={menuProps(action.payHistoryCode)}>
-    //           <a onClick={(e) => e.preventDefault()}>
-    //             <MoreVert sx={{ color: theme.gray[500] }} />
-    //           </a>
-    //         </Dropdown>
-    //       </Space>
-    //     </div>
-    //   ),
-    // },
+    {
+      title: 'Hành Động'.toUpperCase(),
+      key: 'action',
+      width: 120,
+      render: (_, action) => (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Space size="middle">
+            <Dropdown menu={menuProps(action.payHistoryCode, action.status)}>
+              <a onClick={(e) => e.preventDefault()}>
+                <MoreVert sx={{ color: theme.gray[500] }} />
+              </a>
+            </Dropdown>
+          </Space>
+        </div>
+      ),
+    },
   ];
 
   return (

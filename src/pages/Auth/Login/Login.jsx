@@ -21,7 +21,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'by © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="/">
         Viet Group Net
       </Link>{' '}
       {new Date().getFullYear()}
@@ -123,7 +123,7 @@ const Login = () => {
             margin: '30px 32px',
           }}
         >
-          <img src={vgLogo} alt="LogoVietGroupNet" width={75} height={75} style={{ objectFit: 'cover' }} />
+          <img src={vgLogo} alt="" width="80px" style={{ objectFit: 'cover' }} />
         </Box>
 
         <Box

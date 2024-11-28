@@ -8,7 +8,7 @@ const Footer = () => {
     <Box>
       <Divider />
       <Typography color={theme.gray[400]} textAlign="center" fontWeight="500">
-        © 2024, made with ❤️ by VietGroupNet
+        © 2024, phần mềm quản lý VietGroupNet
       </Typography>
     </Box>
   );

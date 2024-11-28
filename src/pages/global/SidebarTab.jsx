@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import theme from '../../utils/theme.js';
-import { AssessmentOutlined, PersonOutlineRounded } from '@mui/icons-material';
+import { AssessmentOutlined, LocalAtmOutlined, PersonOutlineRounded } from '@mui/icons-material';
 import typography from '../../utils/typography';
 import { SchoolOutlined } from '@mui/icons-material';
 import { AppContext } from '../../context/AppProvider.jsx';
@@ -65,14 +65,6 @@ const SidebarTab = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [collapsed]);
 
-  const handleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
-  };
-
-  const handleCollapseIsDefault = () => {
-    setIsCollapsed(isCollapsed);
-  };
-
   const handleBackHome = () => {
     navigate('/');
     setSelected('Dashboard');
@@ -84,65 +76,65 @@ const SidebarTab = () => {
   switch (userType) {
     case TYPE_SYSADMIN.role:
       menuItems.push(
-        { title: 'Dashboard', to: '/', icon: <HomeOutlinedIcon /> },
+        { title: 'Dashboard', to: '/', icon: <HomeOutlinedIcon sx={{ color: theme.primary[500] }} /> },
         {
           title: 'Cán Bộ Nhân Viên',
           to: '/collaborator',
-          icon: <PersonOutlineRounded />,
+          icon: <PersonOutlineRounded sx={{ color: theme.primary[500] }} />,
         },
-        { title: 'Học Viên', to: '/student', icon: <SchoolOutlined /> },
+        { title: 'Học Viên', to: '/student', icon: <SchoolOutlined sx={{ color: theme.primary[500] }} /> },
         {
           title: 'Đơn Hàng',
           to: '/order',
-          icon: <AssessmentOutlined />,
+          icon: <AssessmentOutlined sx={{ color: theme.primary[500] }} />,
         },
         {
           title: 'Hoa hồng - Lịch sử',
           to: '/pay-collaborator',
-          icon: <AssessmentOutlined />,
+          icon: <LocalAtmOutlined sx={{ color: theme.primary[500] }} />,
         },
       );
       break;
     case TYPE_ADMINISTRATOR.role:
       menuItems.push(
-        { title: 'Dashboard', to: '/', icon: <HomeOutlinedIcon /> },
+        { title: 'Dashboard', to: '/', icon: <HomeOutlinedIcon sx={{ color: theme.primary[500] }} /> },
         {
           title: 'Cán Bộ Nhân Viên',
           to: '/collaborator',
-          icon: <PersonOutlineRounded />,
+          icon: <PersonOutlineRounded sx={{ color: theme.primary[500] }} />,
         },
-        { title: 'Học Viên', to: '/student', icon: <SchoolOutlined /> },
+        { title: 'Học Viên', to: '/student', icon: <SchoolOutlined sx={{ color: theme.primary[500] }} /> },
         {
           title: 'Đơn Hàng',
           to: '/order',
-          icon: <AssessmentOutlined />,
+          icon: <AssessmentOutlined sx={{ color: theme.primary[500] }} />,
         },
       );
       break;
     case TYPE_MANAGER.role:
       menuItems.push(
-        { title: 'Dashboard', to: '/', icon: <HomeOutlinedIcon /> },
+        { title: 'Dashboard', to: '/', icon: <HomeOutlinedIcon sx={{ color: theme.primary[500] }} /> },
         {
           title: 'Cán Bộ Nhân Viên',
           to: '/collaborator',
-          icon: <PersonOutlineRounded />,
+          icon: <PersonOutlineRounded sx={{ color: theme.primary[500] }} />,
         },
-        { title: 'Học Viên', to: '/student', icon: <SchoolOutlined /> },
+        { title: 'Học Viên', to: '/student', icon: <SchoolOutlined sx={{ color: theme.primary[500] }} /> },
         {
           title: 'Đơn Hàng',
           to: '/order',
-          icon: <AssessmentOutlined />,
+          icon: <AssessmentOutlined sx={{ color: theme.primary[500] }} />,
         },
       );
       break;
     case TYPE_COLLABORATOR.role:
       menuItems.push(
-        { title: 'Dashboard', to: '/', icon: <HomeOutlinedIcon /> },
-        { title: 'Học Viên', to: '/student', icon: <SchoolOutlined /> },
+        { title: 'Dashboard', to: '/', icon: <HomeOutlinedIcon sx={{ color: theme.primary[500] }} /> },
+        { title: 'Học Viên', to: '/student', icon: <SchoolOutlined sx={{ color: theme.primary[500] }} /> },
         {
           title: 'Đơn Hàng',
           to: '/order',
-          icon: <AssessmentOutlined />,
+          icon: <AssessmentOutlined sx={{ color: theme.primary[500] }} />,
         },
       );
       break;

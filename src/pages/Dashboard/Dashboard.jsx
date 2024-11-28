@@ -290,7 +290,7 @@ const Dashboard = () => {
         </Box>
         <DataTable
           pagination={false}
-          isScroll={false}
+          isScroll={true}
           columns={columns}
           rows={payCollaborators}
           loading={loading}

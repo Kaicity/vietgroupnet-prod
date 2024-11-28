@@ -34,6 +34,7 @@ import { Col, Modal, Row } from 'antd';
 import { TYPE_ADMINISTRATOR, TYPE_MANAGER, TYPE_SYSADMIN } from '../../constants/roleDecentralization.js';
 import BoxCard from '../../components/Card.jsx';
 import { getAllCollaboratorOptions } from '../../constants/collaboratorOptions.js';
+import typography from '../../utils/typography.js';
 
 const CollaboratorForm = () => {
   const [roleOptions, setRoleOptions] = useState([]);
@@ -239,7 +240,9 @@ const CollaboratorForm = () => {
 
       const response = await getAllCollaboratorOptions(page);
       // Tránh dữ liệu trùng lặp vào danh sách sử dụng phương pháp lọc trước khi đưa vào danh sách
-      const uniqueCollaborators = response.filter((newItem) => !allCollaborator.current.some((existingItem) => existingItem.id === newItem.id));
+      const uniqueCollaborators = response.filter(
+        (newItem) => !allCollaborator.current.some((existingItem) => existingItem.id === newItem.id),
+      );
 
       allCollaborator.current = [...allCollaborator.current, ...uniqueCollaborators];
 
@@ -270,7 +273,12 @@ const CollaboratorForm = () => {
 
   return (
     <Box m="20px">
-      <Message isShowMessage={isShowMessage} severity={severity} content={content} handleCloseSnackbar={() => setIsShowMessage(false)} />
+      <Message
+        isShowMessage={isShowMessage}
+        severity={severity}
+        content={content}
+        handleCloseSnackbar={() => setIsShowMessage(false)}
+      />
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={CollaboratorInitialValues}
@@ -280,7 +288,9 @@ const CollaboratorForm = () => {
           useEffect(() => {
             if (collaborator) {
               //Format ngày tháng năm từ db
-              const formattedDateOfBirth = collaborator.dayOfBith ? format(new Date(collaborator.dayOfBith), 'yyyy-MM-dd') : '';
+              const formattedDateOfBirth = collaborator.dayOfBith
+                ? format(new Date(collaborator.dayOfBith), 'yyyy-MM-dd')
+                : '';
 
               // Map collaborator khi được tham chiếu từ danh sách
 
@@ -319,7 +329,11 @@ const CollaboratorForm = () => {
                       </Box>
 
                       <Box display="flex" flexDirection="column" alignItems="center" marginTop="20px">
-                        <ImageUpload onImageSelect={(file) => setFieldValue('imgUrl', file)} defaultImage={values.imgUrl} isEdit={isEdit} />
+                        <ImageUpload
+                          onImageSelect={(file) => setFieldValue('imgUrl', file)}
+                          defaultImage={values.imgUrl}
+                          isEdit={isEdit}
+                        />
                       </Box>
 
                       <Box
@@ -362,9 +376,20 @@ const CollaboratorForm = () => {
 
                           <Grid item xs={16} sm={16} md={8}>
                             <FormLabel component="legend">Giới Tính</FormLabel>
-                            <RadioGroup row name="gender" value={values.gender} onChange={handleChange} onBlur={handleBlur}>
+                            <RadioGroup
+                              row
+                              name="gender"
+                              value={values.gender}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                            >
                               {genderOptions.map((option) => (
-                                <FormControlLabel key={option.value} value={option.value} control={<Radio />} label={option.label} />
+                                <FormControlLabel
+                                  key={option.value}
+                                  value={option.value}
+                                  control={<Radio />}
+                                  label={option.label}
+                                />
                               ))}
                             </RadioGroup>
                             {touched.gender && errors.gender && (
@@ -449,7 +474,11 @@ const CollaboratorForm = () => {
                             <Autocomplete
                               options={bankOptions || null}
                               getOptionLabel={(option) => option.label || ''}
-                              value={values.bankCode ? bankOptions.find((option) => option.value === values.bankCode) || null : null}
+                              value={
+                                values.bankCode
+                                  ? bankOptions.find((option) => option.value === values.bankCode) || null
+                                  : null
+                              }
                               onChange={(event, newValue) => {
                                 setFieldValue('bankCode', newValue ? newValue.value : '');
                               }}
@@ -615,7 +644,17 @@ const CollaboratorForm = () => {
                         }}
                         disabled={loading}
                       >
-                        {loading ? <CircularProgress size={24} sx={{ color: 'white' }} /> : isEdit ? 'Cập nhật thông tin' : 'Lưu thông tin'}
+                        {loading ? (
+                          <CircularProgress size={24} sx={{ color: 'white' }} />
+                        ) : isEdit ? (
+                          <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
+                            Cập nhật thông tin
+                          </Typography>
+                        ) : (
+                          <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
+                            Lưu thông tin
+                          </Typography>
+                        )}
                       </Button>
                     </Box>
                   </Col>

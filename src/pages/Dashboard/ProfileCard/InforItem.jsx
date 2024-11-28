@@ -1,4 +1,4 @@
-import { Grid2, Typography, Tooltip } from '@mui/material';
+import { Grid, Typography, Tooltip } from '@mui/material';
 import theme from '../../../utils/theme';
 
 const InfoItem = ({ icon: IconComponent = () => null, label, value }) => {
@@ -9,39 +9,36 @@ const InfoItem = ({ icon: IconComponent = () => null, label, value }) => {
   const isLongText = words.length > 15;
 
   return (
-    <Grid2
+    <Grid
       container
       alignItems="center"
       spacing={1}
-      style={{ marginBottom: '12px' }}
+      sx={{
+        marginBottom: '12px',
+        flexWrap: isXs ? 'wrap' : 'nowrap',
+      }}
     >
-      <Grid2 item style={{ flex: '0 0 24px' }}>
-        {IconComponent && (
-          <IconComponent style={{ fontSize: isXs ? '18px' : '25px' }} />
-        )}
-      </Grid2>
-      <Grid2 item xs>
+      <Grid item style={{ flex: '0 0 auto', marginRight: '8px' }}>
+        {IconComponent && <IconComponent style={{ fontSize: isXs ? '18px' : '25px', color: theme.primary[500] }} />}
+      </Grid>
+      <Grid item xs>
         <Tooltip title={isLongText ? textContent : ''} arrow>
           <Typography
             sx={{
               fontSize: isXs ? '14px' : '16px',
               wordBreak: 'break-word',
-              whiteSpace: isLongText ? 'nowrap' : 'normal',
+              whiteSpace: isXs ? 'normal' : 'nowrap',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
               display: 'block',
             }}
           >
-            <span style={{ color: theme.black[900], fontWeight: '500' }}>
-              {label}
-            </span>{' '}
-            <span style={{ color: theme.gray[500], fontWeight: '500' }}>
-              {value}
-            </span>
+            <span style={{ color: theme.black[900], fontWeight: '500' }}>{label}</span>{' '}
+            <span style={{ color: theme.gray[500], fontWeight: '500' }}>{value}</span>
           </Typography>
         </Tooltip>
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 };
 
