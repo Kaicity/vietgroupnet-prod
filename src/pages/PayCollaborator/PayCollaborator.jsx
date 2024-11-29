@@ -146,19 +146,28 @@ const PayCollaborator = () => {
         </>
       ),
       async onOk() {
-        try {
-          const payHistoryData = { status: selectedStatus };
+        if (selectedStatus) {
+          try {
+            const payHistoryData = { status: selectedStatus };
 
-          const response = await updatepayHistory(payHistoryCode, payHistoryData);
+            const response = await updatepayHistory(payHistoryCode, payHistoryData);
 
-          if (response.status === 'success') {
-            setSeverity('success');
+            if (response.status === 'success') {
+              setSeverity('success');
+              setIsShowMessage(true);
+              setContent('Cập nhật trạng thái thành công');
+              getDataPayCollaborator();
+            }
+          } catch (error) {
+            console.error(error.message);
+            setSeverity('error');
             setIsShowMessage(true);
-            setContent('Cập nhật chức vụ thành công');
-            getDataPayCollaborator();
+            setContent('Đã có lỗi khi cập nhật trạng thái');
           }
-        } catch (error) {
-          console.error(error.message);
+        } else {
+          setSeverity('warning');
+          setIsShowMessage(true);
+          setContent('Vui lòng chọn trạng thái để cập nhật');
         }
       },
       onCancel() {
