@@ -1,36 +1,30 @@
 const OrderInitialValues = {
-  // Thông tin đơn hàng
   orderCode: '',
   orderName: '',
   quantity: '',
-  interviewDate: null,
-
-  // Thông tin nghiệp đoàn
+  interviewDate: '', // Sử dụng chuỗi rỗng để đồng bộ với Schema
   unionName: '',
   companyName: '',
   companyAddress: '',
-
-  // Thông tin ngành nghề
-  male: '',
-  female:'', // mấy nam mấy nữ
-  minAge: '',
-  maxAge:'', // độ tuổi làm việc từ 18....
-  salary: '', // lương của ngành nghề này
-  interviewStatus: '', // hình thức phỏng vấn
-  eduRequirements: '', // yêu cầu của ngành nghề
-  departureDate: null,
-  jobDescription: '', // chi tiết công việc
-
-  // Thông tin khác
+  male: '', // Số lượng nam, sử dụng chuỗi rỗng
+  female: '',
+  minAge: '', // Tuổi tối thiểu
+  maxAge: '',
+  salary: '',
+  interviewStatus: '',
+  eduRequirements: '',
+  departureDate: '',
+  jobDescription: '',
   experience: '',
-  physicalStrength: '', // Thể lực
-  dominantHand: '', // Thuận tay
-  insurance: '', // Bảo hiểm
-  vision: '', // Thị lực
-  maritalStatus: '', // Tình trạng hôn nhân
-  notes: '', // Ghi chú
-  visaTypes:'',
-  interviewFormat:'',  
+  physicalStrength: '',
+  dominantHand: '',
+  insurance: '',
+  vision: '',
+  maritalStatus: '',
+  notes: '',
+  visaTypes: '',
+  interviewFormat: '',
 };
+
 
 export default OrderInitialValues;

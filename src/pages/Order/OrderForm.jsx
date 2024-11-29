@@ -21,13 +21,7 @@ import { useState, useEffect, useRef } from 'react';
 import { OrderSchema } from './constraint/constraintOrder.js';
 import { getAllStudentOption } from '../../constants/studentCodeOption.js';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  createOrder,
-  createStudentOrder,
-  deleteStudentOrder,
-  getOrderByCode,
-  updateOrder,
-} from '../../api/order.js';
+import { createOrder, createStudentOrder, deleteStudentOrder, getOrderByCode, updateOrder } from '../../api/order.js';
 import Message from '../../components/Message.jsx';
 import { Modal } from 'antd';
 import { format } from 'date-fns';
@@ -61,18 +55,13 @@ const OrderForm = () => {
 
   const handleAddToStudent = async () => {
     if (selectedItem) {
-      const studentExistsInStudentCodes = studentCodes.some(
-        (code) => code === selectedItem.studentCode,
-      );
+      const studentExistsInStudentCodes = studentCodes.some((code) => code === selectedItem.studentCode);
       const studentExistsInLoadStudent = loadStudent.some(
         (student) => student.studentCode === selectedItem.studentCode,
       );
 
       if (!studentExistsInLoadStudent) {
-        setStudentCodes((prevCodes) => [
-          selectedItem.studentCode,
-          ...prevCodes,
-        ]);
+        setStudentCodes((prevCodes) => [selectedItem.studentCode, ...prevCodes]);
         const updatedLoadStudent = [...loadStudent, selectedItem];
         setloadStudent(updatedLoadStudent);
       } else if (studentExistsInStudentCodes) {
@@ -93,9 +82,7 @@ const OrderForm = () => {
     const studentCode = itemToRemove.studentCode;
     setdeleteStudent((prevCodes) => [itemToRemove.studentCode, ...prevCodes]);
     try {
-      const updatedLoadStudent = loadStudent.filter(
-        (item) => item.studentCode !== studentCode,
-      );
+      const updatedLoadStudent = loadStudent.filter((item) => item.studentCode !== studentCode);
       setloadStudent(updatedLoadStudent);
     } catch (error) {
       console.error('Error occurred while removing item:', error);
@@ -119,9 +106,7 @@ const OrderForm = () => {
   };
 
   const handleScroll = (event) => {
-    const bottom =
-      event.target.scrollHeight ===
-      event.target.scrollTop + event.target.clientHeight;
+    const bottom = event.target.scrollHeight === event.target.scrollTop + event.target.clientHeight;
 
     if (bottom && !isFetching.current) {
       const nextPage = page + 1;
@@ -158,42 +143,35 @@ const OrderForm = () => {
   }, []);
   // hanhle submid
   const handleFormSubmit = async (values, { resetForm }) => {
+    console.log('Submitted values:', values); // Kiểm tra giá trị
     try {
       let response;
 
       if (isEdit) {
-        // setCart(orderDetail.order.students);
         response = await updateOrder(values.orderCode, values);
       } else {
         response = await createOrder(values);
       }
       if (studentCodes && studentCodes.length > 0) {
         try {
-          const responses = await Promise.all(
-            studentCodes.map((code) =>
-              createStudentOrder(orderDetail.order.orderCode, code),
-            ),
+          const createStudentReponse = await Promise.all(
+            studentCodes.map((code) => createStudentOrder(orderDetail.order.orderCode, code)),
           );
-
         } catch (error) {
           console.error('Error creating orders:', error);
         }
       }
 
       if (deleteStudent) {
-        const responses = await Promise.all(
-          deleteStudent.map((code) =>
-            deleteStudentOrder(orderDetail.order.orderCode, code),
-          ),
+        const deleteStudentReponse = await Promise.all(
+          deleteStudent.map((code) => deleteStudentOrder(orderDetail.order.orderCode, code)),
         );
       }
 
       if (response.status === 'success') {
         setSeverity('success');
         setIsShowMessage(true);
-        setContent(
-          isEdit ? 'Cập nhật dữ liệu thành công' : 'Thêm dữ liệu thành công',
-        );
+        setContent(isEdit ? 'Cập nhật dữ liệu thành công' : 'Thêm dữ liệu thành công');
 
         setTimeout(() => {
           resetForm();
@@ -219,73 +197,54 @@ const OrderForm = () => {
         content={content}
         handleCloseSnackbar={() => setIsShowMessage(false)}
       />
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={OrderInitialValues}
-        validationSchema={OrderSchema}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          setValues,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-          setFieldValue,
-        }) => {
+      <Formik onSubmit={handleFormSubmit} initialValues={OrderInitialValues} validationSchema={OrderSchema}>
+        {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit, setFieldValue, isValid }) => {
           useEffect(() => {
-            if (orderDetail) {
-              //Format ngày tháng năm từ db
-              const formattedDate = orderDetail.order.departureDate
-                ? format(
-                    new Date(orderDetail.order.departureDate),
-                    'yyyy-MM-dd',
-                  )
+            if (orderDetail?.order) {
+              // Kiểm tra nếu `orderDetail` và `orderDetail.order` không null/undefined
+              // Format ngày tháng năm từ db
+              const formattedDate = orderDetail.order?.departureDate
+                ? format(new Date(orderDetail.order.departureDate), 'yyyy-MM-dd')
                 : '';
 
-              const formattedInterDate = orderDetail.order.interviewDate
-                ? format(
-                    new Date(orderDetail.order.interviewDate),
-                    'yyyy-MM-dd',
-                  )
+              const formattedInterDate = orderDetail.order?.interviewDate
+                ? format(new Date(orderDetail.order.interviewDate), 'yyyy-MM-dd')
                 : '';
+
               setValues({
                 orderName: orderDetail.order?.orderName || '',
-                quanlity: orderDetail.order.quanlity || '',
+                quanlity: orderDetail.order?.quanlity || '',
                 interviewDate: formattedInterDate || '',
-                unionName: orderDetail.order.unionName || '',
-                companyName: orderDetail.order.companyName || '',
-                companyAddress: orderDetail.order.companyAddress || '',
-                male: orderDetail.order.male || '',
-                female: orderDetail.order.female || '',
-                minAge: orderDetail.order.minAge || '',
-                maxAge: orderDetail.order.maxAge || '',
-                salary: orderDetail.order.salary || '',
-                interviewStatus: orderDetail.order.interviewStatus || '',
-                eduRequirements: orderDetail.order.eduRequirements || '',
+                unionName: orderDetail.order?.unionName || '',
+                companyName: orderDetail.order?.companyName || '',
+                companyAddress: orderDetail.order?.companyAddress || '',
+                male: orderDetail.order?.male || '',
+                female: orderDetail.order?.female || '',
+                minAge: orderDetail.order?.minAge || '',
+                maxAge: orderDetail.order?.maxAge || '',
+                salary: orderDetail.order?.salary || '',
+                interviewStatus: orderDetail.order?.interviewStatus || '',
+                eduRequirements: orderDetail.order?.eduRequirements || '',
                 departureDate: formattedDate || '',
-                jobDescription: orderDetail.order.jobDescription || '',
-                experience: orderDetail.order.experience || '',
-                physicalStrength: orderDetail.order.physicalStrength || '',
-                dominantHand: orderDetail.order.dominantHand || '',
-                insurance: orderDetail.order.insurance || '',
-                vision: orderDetail.order.vision || '',
-                maritalStatus: orderDetail.order.maritalStatus || '',
-                notes: orderDetail.order.notes || '',
-                visaTypes: orderDetail.order.visaTypes || '',
-                interviewFormat: orderDetail.order.interviewFormat || '',
+                jobDescription: orderDetail.order?.jobDescription || '',
+                experience: orderDetail.order?.experience || '',
+                physicalStrength: orderDetail.order?.physicalStrength || '',
+                dominantHand: orderDetail.order?.dominantHand || '',
+                insurance: orderDetail.order?.insurance || '',
+                vision: orderDetail.order?.vision || '',
+                maritalStatus: orderDetail.order?.maritalStatus || '',
+                notes: orderDetail.order?.notes || '',
+                visaTypes: orderDetail.order?.visaTypes || '',
+                interviewFormat: orderDetail.order?.interviewFormat || '',
               });
-              setFieldValue('orderCode', orderDetail.order.orderCode);
+
+              setFieldValue('orderCode', orderDetail.order?.orderCode || '');
             }
           }, [orderDetail, setFieldValue]);
+
           return (
             <form onSubmit={handleSubmit}>
-              <Box
-                display="flex"
-                flexDirection={{ xs: 'column', md: 'row' }}
-                gap={{ xs: 2, sm: 2.5, md: 3 }}
-              >
+              <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={{ xs: 2, sm: 2.5, md: 3 }} mx="0px">
                 <Grid
                   container
                   sx={{
@@ -370,32 +329,29 @@ const OrderForm = () => {
                             mb: { xs: 2, sm: 2.5 },
                           }}
                         >
-                          Vui lòng nhập các thông tin chi tiết về đơn hàng. Đảm
-                          bảo rằng tất cả các trường đều được điền đầy đủ để
-                          chúng tôi có thể xử lý đơn hàng của bạn một cách nhanh
-                          chóng để mang lại trải nghiệm tốt hơn. VietGroupEdu
-                          xin chân thành cảm ơn!
+                          Vui lòng nhập các thông tin chi tiết về đơn hàng. Đảm bảo rằng tất cả các trường đều được điền
+                          đầy đủ để chúng tôi có thể xử lý đơn hàng của bạn một cách nhanh chóng để mang lại trải nghiệm
+                          tốt hơn. VietGroupEdu xin chân thành cảm ơn!
                         </Typography>
                       </Grid>
 
                       <Grid item xs={12} md={6}>
-                        <Grid
-                          container
-                          spacing={{ xs: 1.5, sm: 2, md: 2.5 }}
-                          sx={{ p: { xs: '5px', sm: '10px' } }}
-                        >
+                        <Grid container spacing={{ xs: 1.5, sm: 2, md: 2.5 }} sx={{ p: { xs: '5px', sm: '10px' } }}>
                           <Grid item xs={12} sm={6} md={12}>
                             <CustomTextField
-                              label="Tên Đơn Hàng"
+                              label="Tên đơn hàng"
                               name="orderName"
                               placeholder="Ví dụ: Konichiwa"
                               value={values.orderName}
                               onChange={handleChange}
                               onBlur={handleBlur}
+                              onInput={(e) => {
+                                if (e.target.value.length > 50) {
+                                  e.target.value = e.target.value.slice(0, 50); // Cắt chuỗi nếu quá 50 ký tự
+                                }
+                              }}
                               fullWidth
-                              error={
-                                touched.orderName && Boolean(errors.orderName)
-                              }
+                              error={touched.orderName && Boolean(errors.orderName)}
                               helperText={touched.orderName && errors.orderName}
                             />
                           </Grid>
@@ -407,10 +363,11 @@ const OrderForm = () => {
                               value={values.visaTypes}
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              error={
-                                touched.visaTypes && Boolean(errors.visaTypes)
-                              }
-                              helperText={touched.visaTypes && errors.visaTypes}
+                              onInput={(e) => {
+                                if (e.target.value.length > 50) {
+                                  e.target.value = e.target.value.slice(0, 50); // Cắt chuỗi nếu quá 50 ký tự
+                                }
+                              }}
                               fullWidth
                               sx={{
                                 '& .MuiInputBase-input': {
@@ -431,13 +388,8 @@ const OrderForm = () => {
                                 setFieldValue('interviewDate', newValue);
                               }}
                               value={values.interviewDate}
-                              error={
-                                touched.interviewDate &&
-                                Boolean(errors.interviewDate)
-                              }
-                              helperText={
-                                touched.interviewDate && errors.interviewDate
-                              }
+                              error={touched.interviewDate && Boolean(errors.interviewDate)}
+                              helperText={touched.interviewDate && errors.interviewDate}
                               fullWidth
                               sx={{
                                 '& .MuiInputBase-input': {
@@ -494,9 +446,8 @@ const OrderForm = () => {
                             mr: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
                           }}
                         >
-                          Vui lòng cho biết Những Thông Tin của Nghiệp Đoàn Nước
-                          ngoài ứng viên để chúng tôi có thể phân loại và xử lý
-                          thông tin đơn hàng một cách chính xác hơn.
+                          Vui lòng cho biết Những Thông Tin của Nghiệp Đoàn Nước ngoài ứng viên để chúng tôi có thể phân
+                          loại và xử lý thông tin đơn hàng một cách chính xác hơn.
                         </Typography>
                       </Grid>
                       <Grid container spacing={2}>
@@ -511,9 +462,12 @@ const OrderForm = () => {
                                 value={values.unionName}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                error={
-                                  touched.unionName && Boolean(errors.unionName)
-                                }
+                                onInput={(e) => {
+                                  if (e.target.value.length > 50) {
+                                    e.target.value = e.target.value.slice(0, 50); // Cắt chuỗi nếu quá 50 ký tự
+                                  }
+                                }}
+                                error={touched.unionName && Boolean(errors.unionName)}
                                 helperText={touched.unionName && errors.unionName}
                                 fullWidth
                               />
@@ -531,13 +485,14 @@ const OrderForm = () => {
                                 placeholder="Kumia"
                                 value={values.companyName}
                                 onChange={handleChange}
+                                onInput={(e) => {
+                                  if (e.target.value.length > 50) {
+                                    e.target.value = e.target.value.slice(0, 50); // Cắt chuỗi nếu quá 50 ký tự
+                                  }
+                                }}
                                 onBlur={handleBlur}
-                                error={
-                                  touched.companyName && errors.companyName
-                                }
-                                helperText={
-                                  touched.companyName && errors.companyName
-                                }
+                                error={touched.companyName && errors.companyName}
+                                helperText={touched.companyName && errors.companyName}
                                 fullWidth
                               />
                             </Grid>
@@ -552,12 +507,13 @@ const OrderForm = () => {
                             value={values.companyAddress}
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            error={
-                              touched.companyAddress && errors.companyAddress
-                            }
-                            helperText={
-                              touched.companyAddress && errors.companyAddress
-                            }
+                            onInput={(e) => {
+                              if (e.target.value.length > 150) {
+                                e.target.value = e.target.value.slice(0, 150); // Cắt chuỗi nếu quá 50 ký tự
+                              }
+                            }}
+                            error={touched.companyAddress && errors.companyAddress}
+                            helperText={touched.companyAddress && errors.companyAddress}
                             fullWidth
                             multiline
                             rows={3}
@@ -601,10 +557,14 @@ const OrderForm = () => {
                           variant="body2"
                           color="text.secondary"
                           marginBottom={5}
+                          sx={{
+                            fontSize: typography.fontSize.sizeL,
+                            mb: { xs: 2, sm: 2.5 },
+                            mr: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
+                          }}
                         >
-                          Vui lòng cho biết Những yêu cầu của ứng viên để chúng
-                          tôi có thể phân loại và xử lý thông tin đơn hàng một
-                          cách chính xác hơn.
+                          Vui lòng cho biết Những yêu cầu của ứng viên để chúng tôi có thể phân loại và xử lý thông tin
+                          đơn hàng một cách chính xác hơn.
                         </Typography>
                       </Grid>
                       <Grid container spacing={2}>
@@ -613,14 +573,16 @@ const OrderForm = () => {
                           <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
                               <CustomTextField
-                                label="số lượng nam"
+                                label="Số lượng nam"
                                 name="male"
+                                type="number"
                                 placeholder="Ví dụ: 3"
                                 value={values.male}
-                                onChange={(e) => {
-                                  const value =
-                                    parseInt(e.target.value, 10) || '';
-                                  setFieldValue('male', value);
+                                onChange={handleChange}
+                                onInput={(e) => {
+                                  if (e.target.value > 2) {
+                                    e.target.value = e.target.value.slice(0, 2);
+                                  }
                                 }}
                                 onBlur={handleBlur}
                                 error={touched.male && Boolean(errors.male)}
@@ -631,14 +593,16 @@ const OrderForm = () => {
                             </Grid>
                             <Grid item xs={12} md={6}>
                               <CustomTextField
-                                label="số lượng nữ"
+                                label="Số lượng nữ"
                                 name="female"
-                                placeholder=" 2"
+                                placeholder="2"
+                                type="number"
                                 value={values.female}
-                                onChange={(e) => {
-                                  const value =
-                                    parseInt(e.target.value, 10) || '';
-                                  setFieldValue('female', value);
+                                onChange={handleChange}
+                                onInput={(e) => {
+                                  if (e.target.value > 2) {
+                                    e.target.value = e.target.value.slice(0, 2);
+                                  }
                                 }}
                                 onBlur={handleBlur}
                                 error={touched.female && Boolean(errors.female)}
@@ -649,20 +613,22 @@ const OrderForm = () => {
                             </Grid>
                             <Grid item xs={12} md={6}>
                               <CustomTextField
-                                label="trên 18"
+                                label="Trên 18"
                                 name="minAge"
-                                placeholder="Ví dụ: 18 "
+                                placeholder="Ví dụ: 18"
+                                type="number" // Add this to restrict input to numbers
                                 value={values.minAge}
-                                onChange={(e) => {
-                                  const value =
-                                    parseInt(e.target.value, 10) || '';
-                                  setFieldValue('minAge', value);
+                                onChange={handleChange}
+                                onInput={(e) => {
+                                  if (e.target.value.length > 2) {
+                                    e.target.value = e.target.value.slice(0, 2); // Limit input to 2 digits
+                                  }
                                 }}
                                 onBlur={handleBlur}
                                 fullWidth
                                 error={touched.minAge && Boolean(errors.minAge)}
                                 helperText={touched.minAge && errors.minAge}
-                                multiline
+                                multiline={false} // Set to false because numbers usually don't require multiline
                               />
                             </Grid>
 
@@ -671,25 +637,32 @@ const OrderForm = () => {
                                 label="Đến"
                                 name="maxAge"
                                 placeholder="25"
+                                type="number"
                                 value={values.maxAge}
-                                onChange={(e) => {
-                                  const value =
-                                    parseInt(e.target.value, 10) || '';
-                                  setFieldValue('maxAge', value);
-                                }}
+                                onChange={handleChange}
                                 onBlur={handleBlur}
+                                onInput={(e) => {
+                                  if (e.target.value > 2) {
+                                    e.target.value = e.target.value.slice(0, 2);
+                                  }
+                                }}
                                 fullWidth
                                 error={touched.maxAge && Boolean(errors.maxAge)}
                                 helperText={touched.maxAge && errors.maxAge}
-                                multiline
                               />
                             </Grid>
                             <Grid item xs={12} md={12}>
                               <CustomTextField
                                 label="Mức Lương"
                                 name="salary"
+                                type="number"
                                 placeholder="Ví dụ: 5 triệu"
                                 value={values.salary}
+                                onInput={(e) => {
+                                  if (e.target.value > 12) {
+                                    e.target.value = e.target.value.slice(0, 12);
+                                  }
+                                }}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 error={touched.salary && Boolean(errors.salary)}
@@ -710,17 +683,12 @@ const OrderForm = () => {
                                 value={
                                   values.interviewStatus
                                     ? interviewStatusOptions.find(
-                                        (option) =>
-                                          option.value ===
-                                          values.interviewStatus,
+                                        (option) => option.value === values.interviewStatus,
                                       ) || null
                                     : null
                                 }
                                 onChange={(event, newValue) => {
-                                  setFieldValue(
-                                    'interviewStatus',
-                                    newValue ? newValue.value : '',
-                                  );
+                                  setFieldValue('interviewStatus', newValue ? newValue.value : '');
                                 }}
                                 renderInput={(params) => (
                                   <CustomTextField
@@ -728,14 +696,8 @@ const OrderForm = () => {
                                     label="Tình Trạng"
                                     name="interviewStatus"
                                     sx={{ marginRight: 0 }}
-                                    error={
-                                      touched.interviewStatus &&
-                                      Boolean(errors.interviewStatus)
-                                    }
-                                    helperText={
-                                      touched.interviewStatus &&
-                                      errors.interviewStatus
-                                    }
+                                    error={touched.interviewStatus && Boolean(errors.interviewStatus)}
+                                    helperText={touched.interviewStatus && errors.interviewStatus}
                                   />
                                 )}
                               />
@@ -748,17 +710,12 @@ const OrderForm = () => {
                                 value={
                                   values.interviewFormat
                                     ? interviewFormatOptions.find(
-                                        (option) =>
-                                          option.value ===
-                                          values.interviewFormat,
+                                        (option) => option.value === values.interviewFormat,
                                       ) || null
                                     : null
                                 }
                                 onChange={(event, newValue) => {
-                                  setFieldValue(
-                                    'interviewFormat',
-                                    newValue ? newValue.value : '',
-                                  );
+                                  setFieldValue('interviewFormat', newValue ? newValue.value : '');
                                 }}
                                 renderInput={(params) => (
                                   <CustomTextField
@@ -766,14 +723,8 @@ const OrderForm = () => {
                                     label="Hình Thức Phỏng Vấn"
                                     name="interviewFormat"
                                     sx={{ marginRight: 0 }}
-                                    error={
-                                      touched.interviewFormat &&
-                                      Boolean(errors.interviewFormat)
-                                    }
-                                    helperText={
-                                      touched.interviewFormat &&
-                                      errors.interviewFormat
-                                    }
+                                    error={touched.interviewFormat && Boolean(errors.interviewFormat)}
+                                    helperText={touched.interviewFormat && errors.interviewFormat}
                                   />
                                 )}
                               />
@@ -785,18 +736,11 @@ const OrderForm = () => {
                                 getOptionLabel={(option) => option.label || ''}
                                 value={
                                   values.eduRequirements
-                                    ? educationLevels.find(
-                                        (option) =>
-                                          option.value ===
-                                          values.eduRequirements,
-                                      ) || null
+                                    ? educationLevels.find((option) => option.value === values.eduRequirements) || null
                                     : null
                                 }
                                 onChange={(event, newValue) => {
-                                  setFieldValue(
-                                    'eduRequirements',
-                                    newValue ? newValue.value : '',
-                                  );
+                                  setFieldValue('eduRequirements', newValue ? newValue.value : '');
                                 }}
                                 renderInput={(params) => (
                                   <CustomTextField
@@ -804,14 +748,8 @@ const OrderForm = () => {
                                     label="Trình Độ"
                                     name="eduRequirements"
                                     sx={{ marginRight: 0 }}
-                                    error={
-                                      touched.eduRequirements &&
-                                      Boolean(errors.eduRequirements)
-                                    }
-                                    helperText={
-                                      touched.eduRequirements &&
-                                      errors.eduRequirements
-                                    }
+                                    error={touched.eduRequirements && Boolean(errors.eduRequirements)}
+                                    helperText={touched.eduRequirements && errors.eduRequirements}
                                   />
                                 )}
                               />
@@ -823,6 +761,8 @@ const OrderForm = () => {
                                   setFieldValue('departureDate', newValue);
                                 }}
                                 value={values.departureDate}
+                                error={touched.departureDate && Boolean(errors.departureDate)}
+                                helperText={touched.departureDate && errors.departureDate}
                                 fullWidth
                                 sx={{
                                   '& .MuiInputBase-input': {
@@ -846,6 +786,13 @@ const OrderForm = () => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             fullWidth
+                            onInput={(e) => {
+                              if (e.target.value > 300) {
+                                e.target.value = e.target.value.slice(0, 300);
+                              }
+                            }}
+                            error={touched.jobDescription && Boolean(errors.jobDescription)}
+                            helperText={touched.jobDescription && errors.jobDescription}
                             multiline
                             rows={3}
                           />
@@ -890,10 +837,8 @@ const OrderForm = () => {
                               mr: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
                             }}
                           >
-                            Vui lòng cho biết Những Thông Tin cần thiết khác của
-                            học viên cần đáp ứng của Đơn Hàng để chúng tôi có
-                            thể phân loại và xử lý thông tin đơn hàng một cách
-                            chính xác hơn
+                            Vui lòng cho biết Những Thông Tin cần thiết khác của học viên cần đáp ứng của Đơn Hàng để
+                            chúng tôi có thể phân loại và xử lý thông tin đơn hàng một cách chính xác hơn
                           </Typography>
                         </Grid>
                         <Grid container spacing={2}>
@@ -907,7 +852,31 @@ const OrderForm = () => {
                                   placeholder="Ví dụ:10/10"
                                   value={values.vision}
                                   onChange={handleChange}
+                                  onInput={(e) => {
+                                    // Lấy giá trị hiện tại từ input
+                                    let value = e.target.value;
+
+                                    // Nếu giá trị trống, không thay đổi gì
+                                    if (value === '') {
+                                      return;
+                                    }
+
+                                    // Nếu giá trị chỉ chứa một chữ số, tự động thêm "/10"
+                                    if (/^\d$/.test(value)) {
+                                      value += '/10';
+                                    }
+
+                                    // Nếu giá trị có nhiều ký tự, chỉ giữ lại chữ số đầu tiên và thêm "/10"
+                                    else if (value.length > 2) {
+                                      value = value.slice(0, 1) + '/10'; // Giới hạn chỉ cho phép 1 chữ số và "/10"
+                                    }
+
+                                    // Cập nhật giá trị của input
+                                    e.target.value = value;
+                                  }}
                                   onBlur={handleBlur}
+                                  error={touched.vision && Boolean(errors.vision)}
+                                  helperText={touched.vision && errors.vision}
                                   fullWidth
                                 />
                               </Grid>
@@ -915,23 +884,16 @@ const OrderForm = () => {
                               <Grid item xs={12}>
                                 <Autocomplete
                                   options={physicalStrengthOptions || null}
-                                  getOptionLabel={(option) =>
-                                    option.label || ''
-                                  }
+                                  getOptionLabel={(option) => option.label || ''}
                                   value={
                                     values.physicalStrength
                                       ? physicalStrengthOptions.find(
-                                          (option) =>
-                                            option.value ===
-                                            values.physicalStrength,
+                                          (option) => option.value === values.physicalStrength,
                                         ) || null
                                       : null
                                   }
                                   onChange={(event, newValue) => {
-                                    setFieldValue(
-                                      'physicalStrength',
-                                      newValue ? newValue.value : '',
-                                    );
+                                    setFieldValue('physicalStrength', newValue ? newValue.value : '');
                                   }}
                                   renderInput={(params) => (
                                     <CustomTextField
@@ -947,23 +909,15 @@ const OrderForm = () => {
                               <Grid item xs={12}>
                                 <Autocomplete
                                   options={dominantHandOptions || null}
-                                  getOptionLabel={(option) =>
-                                    option.label || ''
-                                  }
+                                  getOptionLabel={(option) => option.label || ''}
                                   value={
                                     values.dominantHand
-                                      ? dominantHandOptions.find(
-                                          (option) =>
-                                            option.value ===
-                                            values.dominantHand,
-                                        ) || null
+                                      ? dominantHandOptions.find((option) => option.value === values.dominantHand) ||
+                                        null
                                       : null
                                   }
                                   onChange={(event, newValue) => {
-                                    setFieldValue(
-                                      'dominantHand',
-                                      newValue ? newValue.value : '',
-                                    );
+                                    setFieldValue('dominantHand', newValue ? newValue.value : '');
                                   }}
                                   renderInput={(params) => (
                                     <CustomTextField
@@ -971,6 +925,8 @@ const OrderForm = () => {
                                       label="Tay Thuận"
                                       name="dominantHand"
                                       sx={{ marginRight: 0 }}
+                                      error={touched.dominantHand && Boolean(errors.dominantHand)}
+                                      helperText={touched.dominantHand && errors.dominantHand}
                                     />
                                   )}
                                 />
@@ -995,22 +951,14 @@ const OrderForm = () => {
                               <Grid item xs={12}>
                                 <Autocomplete
                                   options={experienceOptions || null}
-                                  getOptionLabel={(option) =>
-                                    option.label || ''
-                                  }
+                                  getOptionLabel={(option) => option.label || ''}
                                   value={
                                     values.experience
-                                      ? experienceOptions.find(
-                                          (option) =>
-                                            option.value === values.experience,
-                                        ) || null
+                                      ? experienceOptions.find((option) => option.value === values.experience) || null
                                       : null
                                   }
                                   onChange={(event, newValue) => {
-                                    setFieldValue(
-                                      'experience',
-                                      newValue ? newValue.value : '',
-                                    );
+                                    setFieldValue('experience', newValue ? newValue.value : '');
                                   }}
                                   renderInput={(params) => (
                                     <CustomTextField
@@ -1026,23 +974,15 @@ const OrderForm = () => {
                               <Grid item xs={12}>
                                 <Autocomplete
                                   options={maritalStatusOptions || null}
-                                  getOptionLabel={(option) =>
-                                    option.label || ''
-                                  }
+                                  getOptionLabel={(option) => option.label || ''}
                                   value={
                                     values.maritalStatus
-                                      ? maritalStatusOptions.find(
-                                          (option) =>
-                                            option.value ===
-                                            values.maritalStatus,
-                                        ) || null
+                                      ? maritalStatusOptions.find((option) => option.value === values.maritalStatus) ||
+                                        null
                                       : null
                                   }
                                   onChange={(event, newValue) => {
-                                    setFieldValue(
-                                      'maritalStatus',
-                                      newValue ? newValue.value : '',
-                                    );
+                                    setFieldValue('maritalStatus', newValue ? newValue.value : '');
                                   }}
                                   renderInput={(params) => (
                                     <CustomTextField
@@ -1050,6 +990,8 @@ const OrderForm = () => {
                                       label="Hình Thức"
                                       name="maritalStatus"
                                       sx={{ marginRight: 0 }}
+                                      error={touched.maritalStatus && Boolean(errors.maritalStatus)}
+                                      helperText={touched.maritalStatus && errors.maritalStatus}
                                     />
                                   )}
                                 />
@@ -1060,11 +1002,10 @@ const OrderForm = () => {
                             <CustomTextQuill
                               readOnly={false}
                               toolbarVisible={true}
-                              label={'Tình trạng học tập'}
+                              label={'Các phụ cấp và phương tiện'}
                               value={values.notes}
-                              onChange={(content) =>
-                                setFieldValue('notes', content)
-                              }
+                              onChange={(content) => setFieldValue('notes', content)}
+                              charLimit={1500} // Giới hạn ký tự
                             />
                           </Grid>
                         </Grid>
@@ -1107,20 +1048,19 @@ const OrderForm = () => {
                     {/* Item Selection */}
                     <Grid item xs={12}>
                       <Autocomplete
-                        options={students} // Chỉ render danh sách trong state
+                        options={students}
                         getOptionLabel={(option) => option.name || ''}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Chọn Học Viên"
-                            variant="outlined"
-                          />
-                        )}
+                        onChange={(event, newValue) => {
+                          setSelectedItem(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Chọn Học Viên" variant="outlined" />}
                         renderOption={(props, option) => (
-                          <li {...props} key={option.studentCode}>{option.name}</li>
+                          <li {...props} key={option.studentCode}>
+                            {option.name}
+                          </li>
                         )}
                         ListboxProps={{
-                          onScroll: handleScroll, // Gắn sự kiện cuộn
+                          onScroll: handleScroll,
                         }}
                       />
                     </Grid>
@@ -1150,9 +1090,10 @@ const OrderForm = () => {
                             xs: '8px',
                             sm: '10px',
                           },
+                          textTransform: 'none',
                         }}
                       >
-                        Thêm Học Viên
+                        Thêm học viên
                       </Button>
                     </Grid>
 
@@ -1170,10 +1111,7 @@ const OrderForm = () => {
                           >
                             <Typography>{item.name}</Typography>
 
-                            <IconButton
-                              onClick={() => handleRemoveFromStudent(item)}
-                              color="secondary"
-                            >
+                            <IconButton onClick={() => handleRemoveFromStudent(item)} color="secondary">
                               <Delete />
                             </IconButton>
                           </ListItem>
@@ -1216,6 +1154,8 @@ const OrderForm = () => {
                             md: '40px',
                             lg: '44px',
                           },
+                          textTransform: 'none',
+
                         }}
                         disabled={loading}
                       >
@@ -1251,6 +1191,8 @@ const OrderForm = () => {
                             xs: '8px',
                             sm: '10px',
                           },
+                          textTransform: 'none',
+
                         }}
                         onClick={() => {
                           navigate('/order');
