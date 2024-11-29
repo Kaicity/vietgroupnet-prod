@@ -190,7 +190,7 @@ const OrderForm = () => {
   };
 
   return (
-    <Box m={{ xs: '10px', sm: '5px', md: '10px', lg: '15px', xl: '16px' }}>
+    <Box m="20px">
       <Message
         isShowMessage={isShowMessage}
         severity={severity}
@@ -325,7 +325,7 @@ const OrderForm = () => {
                           variant="body1"
                           color="text.secondary"
                           sx={{
-                            fontSize: typography.fontSize.sizeL,
+                            fontSize: typography.fontSize.sizeM,
                             mb: { xs: 2, sm: 2.5 },
                           }}
                         >
@@ -441,7 +441,7 @@ const OrderForm = () => {
                           variant="body2"
                           color="text.secondary"
                           sx={{
-                            fontSize: typography.fontSize.sizeL,
+                            fontSize: typography.fontSize.sizeM,
                             mb: { xs: 2, sm: 2.5 },
                             mr: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
                           }}
@@ -558,7 +558,7 @@ const OrderForm = () => {
                           color="text.secondary"
                           marginBottom={5}
                           sx={{
-                            fontSize: typography.fontSize.sizeL,
+                            fontSize: typography.fontSize.sizeM,
                             mb: { xs: 2, sm: 2.5 },
                             mr: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
                           }}
@@ -832,7 +832,7 @@ const OrderForm = () => {
                             variant="body2"
                             color="text.secondary"
                             sx={{
-                              fontSize: typography.fontSize.sizeL,
+                              fontSize: typography.fontSize.sizeM,
                               mb: { xs: 2, sm: 2.5 },
                               mr: { xs: 2, sm: 3, md: 4, lg: 5, xl: 6 },
                             }}
@@ -883,31 +883,6 @@ const OrderForm = () => {
 
                               <Grid item xs={12}>
                                 <Autocomplete
-                                  options={physicalStrengthOptions || null}
-                                  getOptionLabel={(option) => option.label || ''}
-                                  value={
-                                    values.physicalStrength
-                                      ? physicalStrengthOptions.find(
-                                          (option) => option.value === values.physicalStrength,
-                                        ) || null
-                                      : null
-                                  }
-                                  onChange={(event, newValue) => {
-                                    setFieldValue('physicalStrength', newValue ? newValue.value : '');
-                                  }}
-                                  renderInput={(params) => (
-                                    <CustomTextField
-                                      {...params}
-                                      label="Thể Lực"
-                                      name="physicalStrength"
-                                      sx={{ marginRight: 0 }}
-                                    />
-                                  )}
-                                />
-                              </Grid>
-
-                              <Grid item xs={12}>
-                                <Autocomplete
                                   options={dominantHandOptions || null}
                                   getOptionLabel={(option) => option.label || ''}
                                   value={
@@ -932,45 +907,23 @@ const OrderForm = () => {
                                 />
                               </Grid>
                             </Grid>
+
+                            <Grid item xs={12} sx={{ mt: '15px' }}>
+                              <CustomTextField
+                                label="Bảo Hiểm Xã Hội"
+                                name="insurance"
+                                placeholder=" bảo hiểm gì"
+                                value={values.insurance}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                fullWidth
+                              />
+                            </Grid>
                           </Grid>
+
                           {/* Right Column */}
                           <Grid item xs={12} md={6}>
                             <Grid container spacing={2}>
-                              <Grid item xs={12}>
-                                <CustomTextField
-                                  label="Bảo Hiểm Xã Hội"
-                                  name="insurance"
-                                  placeholder=" bảo hiểm gì"
-                                  value={values.insurance}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  fullWidth
-                                />
-                              </Grid>
-
-                              <Grid item xs={12}>
-                                <Autocomplete
-                                  options={experienceOptions || null}
-                                  getOptionLabel={(option) => option.label || ''}
-                                  value={
-                                    values.experience
-                                      ? experienceOptions.find((option) => option.value === values.experience) || null
-                                      : null
-                                  }
-                                  onChange={(event, newValue) => {
-                                    setFieldValue('experience', newValue ? newValue.value : '');
-                                  }}
-                                  renderInput={(params) => (
-                                    <CustomTextField
-                                      {...params}
-                                      label="Đã có kinh nghiệm hay chưa"
-                                      name="experience"
-                                      sx={{ marginRight: 0 }}
-                                    />
-                                  )}
-                                />
-                              </Grid>
-
                               <Grid item xs={12}>
                                 <Autocomplete
                                   options={maritalStatusOptions || null}
@@ -996,8 +949,59 @@ const OrderForm = () => {
                                   )}
                                 />
                               </Grid>
+
+                              <Grid item xs={12}>
+                                <Autocomplete
+                                  options={experienceOptions || null}
+                                  getOptionLabel={(option) => option.label || ''}
+                                  value={
+                                    values.experience
+                                      ? experienceOptions.find((option) => option.value === values.experience) || null
+                                      : null
+                                  }
+                                  onChange={(event, newValue) => {
+                                    setFieldValue('experience', newValue ? newValue.value : '');
+                                  }}
+                                  renderInput={(params) => (
+                                    <CustomTextField
+                                      {...params}
+                                      label="Đã có kinh nghiệm hay chưa"
+                                      name="experience"
+                                      sx={{ marginRight: 0 }}
+                                      error={touched.experience && Boolean(errors.experience)}
+                                      helperText={touched.experience && errors.experience}
+                                    />
+                                  )}
+                                />
+                              </Grid>
+
+                              <Grid item xs={12}>
+                                <Autocomplete
+                                  options={physicalStrengthOptions || null}
+                                  getOptionLabel={(option) => option.label || ''}
+                                  value={
+                                    values.physicalStrength
+                                      ? physicalStrengthOptions.find(
+                                          (option) => option.value === values.physicalStrength,
+                                        ) || null
+                                      : null
+                                  }
+                                  onChange={(event, newValue) => {
+                                    setFieldValue('physicalStrength', newValue ? newValue.value : '');
+                                  }}
+                                  renderInput={(params) => (
+                                    <CustomTextField
+                                      {...params}
+                                      label="Thể Lực"
+                                      name="physicalStrength"
+                                      sx={{ marginRight: 0 }}
+                                    />
+                                  )}
+                                />
+                              </Grid>
                             </Grid>
                           </Grid>
+
                           <Grid item xs={12} md={12} mb={'50px'}>
                             <CustomTextQuill
                               readOnly={false}
@@ -1071,7 +1075,7 @@ const OrderForm = () => {
                         variant="outlined"
                         color="primary"
                         fullWidth
-                        startIcon = {<AddOutlined />}
+                        startIcon={<AddOutlined />}
                         onClick={handleAddToStudent}
                         disabled={!selectedItem}
                         sx={{
@@ -1139,7 +1143,7 @@ const OrderForm = () => {
                         type="submit"
                         variant="contained"
                         fullWidth
-                        startIcon = {<SaveOutlined />}
+                        startIcon={<SaveOutlined />}
                         sx={{
                           borderRadius: { xs: '8px', sm: '10px' },
 
@@ -1155,7 +1159,6 @@ const OrderForm = () => {
                             lg: '44px',
                           },
                           textTransform: 'none',
-
                         }}
                         disabled={loading}
                       >
@@ -1192,7 +1195,6 @@ const OrderForm = () => {
                             sm: '10px',
                           },
                           textTransform: 'none',
-
                         }}
                         onClick={() => {
                           navigate('/order');

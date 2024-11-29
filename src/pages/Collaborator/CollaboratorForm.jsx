@@ -164,6 +164,15 @@ const CollaboratorForm = () => {
 
     if (isEdit) {
       try {
+        if (TYPE_SYSADMIN.role === sessionStorage.getItem('role')) {
+          // Set Người giới thiệu của levelrole
+          if (valueRefferrer) {
+            values.referrerCode = valueRefferrer.collaboratorCode;
+          }
+        }
+
+        console.log(values);
+
         const response = await updateCollaborator(values.collaboratorCode, values);
 
         if (response.status === 'success') {
@@ -180,7 +189,7 @@ const CollaboratorForm = () => {
         console.error('Lỗi khi cập nhật cộng tác viên:', error);
         setIsShowMessage(true);
         setSeverity('error');
-        setContent(error.message);
+        setContent(error);
       } finally {
         setLoading(false);
       }
@@ -208,9 +217,11 @@ const CollaboratorForm = () => {
           values.imgUrl = downloadURL;
         }
 
-        // Set Người giới thiệu của levelrole
-        if (valueRefferrer) {
-          values.referrerCode = valueRefferrer.collaboratorCode;
+        if (TYPE_SYSADMIN.role === sessionStorage.getItem('role')) {
+          // Set Người giới thiệu của levelrole
+          if (valueRefferrer) {
+            values.referrerCode = valueRefferrer.collaboratorCode;
+          }
         }
 
         const response = await createCollaborator(values);
@@ -593,7 +604,7 @@ const CollaboratorForm = () => {
                       <BoxCard>
                         <Grid item xs={16} sm={16} md={8}>
                           <Autocomplete
-                            disabled={isDisableEnter}
+                            disabled={isDisableEnter || isEdit}
                             options={collaborators} // Chỉ render danh sách trong state
                             getOptionLabel={(option) => option.name || ''}
                             value={isDisableEnter ? null : valueRefferrer}
@@ -637,7 +648,7 @@ const CollaboratorForm = () => {
                     <Box display="flex" justifyContent="flex-end">
                       <Button
                         variant="contained"
-                        startIcon = {<SaveOutlined />}
+                        startIcon={<SaveOutlined />}
                         type="submit"
                         sx={{
                           backgroundColor: theme.primary[500],

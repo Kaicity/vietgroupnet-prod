@@ -370,7 +370,7 @@ const Order = () => {
   // columns table
   const columns = [
     {
-      title: 'Đơn Hàng'.toUpperCase(),
+      title: 'Mã Đơn Hàng'.toUpperCase(),
       dataIndex: 'orderCode',
       key: 'orderCode',
       width: collapsed ? 260 : 220,
@@ -391,7 +391,7 @@ const Order = () => {
       key: 'companyName',
       width: collapsed ? 220 : 200,
       sorter: (a, b) => a.companyName.localeCompare(b.companyName),
-      render: (text) => <span style={{ fontWeight: 500 }}>{text}</span>,
+      render: (text) => <span style={{ fontWeight: 500, color: theme.gray[500] }}>{text?.toUpperCase()}</span>,
     },
 
     {
@@ -400,7 +400,7 @@ const Order = () => {
       key: 'unionName',
       width: collapsed ? 220 : 200,
       sorter: (a, b) => a.unionName.localeCompare(b.unionName),
-      render: (text) => <span style={{ fontWeight: 500 }}>{text}</span>,
+      render: (text) => <span style={{ fontWeight: 500 }}>{text?.toUpperCase()}</span>,
     },
     {
       title: 'Ngày Phỏng Vấn'.toUpperCase(),
@@ -437,7 +437,7 @@ const Order = () => {
       title: 'Nữ'.toUpperCase(),
       dataIndex: 'female',
       key: 'male',
-      width: collapsed ? 100 : 80,
+      width: collapsed ? 120 : 100,
       sorter: (a, b) => a.studentCount - b.studentCount,
       render: (male) => <span>{male ? male : 'Không có'}</span>,
     },
@@ -445,7 +445,7 @@ const Order = () => {
       title: 'Nam'.toUpperCase(),
       dataIndex: 'male',
       key: 'male',
-      width: collapsed ? 100 : 80,
+      width: collapsed ? 120 : 100,
       sorter: (a, b) => a.male - b.male,
       render: (male) => <span>{male ? male : 'Không có'}</span>,
     },
