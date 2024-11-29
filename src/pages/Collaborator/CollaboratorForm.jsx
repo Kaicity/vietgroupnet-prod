@@ -35,6 +35,7 @@ import { TYPE_ADMINISTRATOR, TYPE_MANAGER, TYPE_SYSADMIN } from '../../constants
 import BoxCard from '../../components/Card.jsx';
 import { getAllCollaboratorOptions } from '../../constants/collaboratorOptions.js';
 import typography from '../../utils/typography.js';
+import { SaveOutlined } from '@mui/icons-material';
 
 const CollaboratorForm = () => {
   const [roleOptions, setRoleOptions] = useState([]);
@@ -636,10 +637,9 @@ const CollaboratorForm = () => {
                     <Box display="flex" justifyContent="flex-end">
                       <Button
                         variant="contained"
+                        startIcon = {<SaveOutlined />}
                         type="submit"
                         sx={{
-                          width: '100%',
-                          maxWidth: '200px',
                           backgroundColor: theme.primary[500],
                         }}
                         disabled={loading}
@@ -648,11 +648,11 @@ const CollaboratorForm = () => {
                           <CircularProgress size={24} sx={{ color: 'white' }} />
                         ) : isEdit ? (
                           <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
-                            Cập nhật thông tin
+                            Cập nhật
                           </Typography>
                         ) : (
                           <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
-                            Lưu thông tin
+                            Lưu
                           </Typography>
                         )}
                       </Button>

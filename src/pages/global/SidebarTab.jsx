@@ -151,10 +151,11 @@ const SidebarTab = () => {
     <div style={{ display: 'flex', height: '100%', minHeight: '400px' }}>
       <Sidebar
         collapsed={isCollapsed}
+        collapsedWidth={window.innerWidth <= 768 ? "0px" : "80px"}
         transitionDuration={1000}
         backgroundColor="#fff"
         style={{ border: 'none', borderRight: `1px solid ${theme.gray[100]}` }}
-        width={window.innerWidth <= 768 ? window.innerWidth + 'px' : '300px'}
+        width={window.innerWidth <= 768 ? '100px' : '280px'}
       >
         <Menu>
           <Box display="flex" justifyContent="space-between" alignItems="center">

@@ -16,7 +16,7 @@ import theme from '../../utils/theme';
 import CustomTextField from '../../components/CustomTextField.jsx';
 import BasicDatePicker from '../../components/CanlenderDate.jsx';
 import OrderInitialValues from '../../models/order.js';
-import { Delete } from '@mui/icons-material';
+import { AddOutlined, Delete, SaveOutlined } from '@mui/icons-material';
 import { useState, useEffect, useRef } from 'react';
 import { OrderSchema } from './constraint/constraintOrder.js';
 import { getAllStudentOption } from '../../constants/studentCodeOption.js';
@@ -285,7 +285,6 @@ const OrderForm = () => {
                 display="flex"
                 flexDirection={{ xs: 'column', md: 'row' }}
                 gap={{ xs: 2, sm: 2.5, md: 3 }}
-                mx="0px"
               >
                 <Grid
                   container
@@ -1132,6 +1131,7 @@ const OrderForm = () => {
                         variant="outlined"
                         color="primary"
                         fullWidth
+                        startIcon = {<AddOutlined />}
                         onClick={handleAddToStudent}
                         disabled={!selectedItem}
                         sx={{
@@ -1201,6 +1201,7 @@ const OrderForm = () => {
                         type="submit"
                         variant="contained"
                         fullWidth
+                        startIcon = {<SaveOutlined />}
                         sx={{
                           borderRadius: { xs: '8px', sm: '10px' },
 
@@ -1223,7 +1224,7 @@ const OrderForm = () => {
                         ) : isEdit ? (
                           'Cập nhật thông tin'
                         ) : (
-                          'Lưu thông tin'
+                          'Lưu'
                         )}
                       </Button>
                     </Grid>

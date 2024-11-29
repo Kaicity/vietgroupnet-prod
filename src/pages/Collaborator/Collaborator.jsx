@@ -18,7 +18,11 @@ import { useNavigate } from 'react-router-dom';
 import theme from '../../utils/theme.js';
 import DataTable from '../../components/DataTable.jsx';
 import Header from '../../components/Header.jsx';
-import { deleteCollaborator, getCollaboratorsByRoles, updateRoleCollaboratorBySysAdmin } from '../../api/collaborator.js';
+import {
+  deleteCollaborator,
+  getCollaboratorsByRoles,
+  updateRoleCollaboratorBySysAdmin,
+} from '../../api/collaborator.js';
 import Message from '../../components/Message.jsx';
 import { genderConfig, roleConfig, statusConfig } from '../../constants/enums/collaborator-enum.js';
 import { AppContext } from '../../context/AppProvider.jsx';
@@ -257,7 +261,7 @@ const Collaborator = () => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'C4F09B' },
+        fgColor: { argb: '99C464' },
       };
       cell.border = {
         top: { style: 'thin' },
@@ -268,7 +272,7 @@ const Collaborator = () => {
     });
 
     // Đặt chiều cao của hàng header lớn hơn
-    sheet.getRow(1).height = 50;
+    sheet.getRow(1).height = 30;
 
     if (Array.isArray(collaborators) && collaborators.length) {
       const transformedData = collaborators.map((collaborator) => ({
@@ -576,9 +580,19 @@ const Collaborator = () => {
       <Box p="0px 0px 20px 0px">
         <Header title="Cán bộ nhân viên" />
       </Box>
-      <Message isShowMessage={isShowMessage} severity={severity} content={content} handleCloseSnackbar={() => setIsShowMessage(false)} />
+      <Message
+        isShowMessage={isShowMessage}
+        severity={severity}
+        content={content}
+        handleCloseSnackbar={() => setIsShowMessage(false)}
+      />
       <BoxCard>
-        <Box display="flex" alignItems={{ xs: 'flex-end', sm: 'center' }} gap={3} flexDirection={{ sm: 'column', xs: 'column', md: 'row' }}>
+        <Box
+          display="flex"
+          alignItems={{ xs: 'flex-end', sm: 'center' }}
+          gap={3}
+          flexDirection={{ sm: 'column', xs: 'column', md: 'row' }}
+        >
           <SelectionOption
             value={levelFilter || 'Chọn cấp bậc'}
             onChange={handleLevelChange}
@@ -626,7 +640,12 @@ const Collaborator = () => {
           alignItems={{ xs: 'flex-end' }}
           mb="10px"
         >
-          <Box display="flex" alignItems={{ xs: 'flex-end', sm: 'center' }} width={{ xs: '100%', md: '250px' }} mb={{ xs: 2, sm: 2, md: 0 }}>
+          <Box
+            display="flex"
+            alignItems={{ xs: 'flex-end', sm: 'center' }}
+            width={{ xs: '100%', md: '250px' }}
+            mb={{ xs: 2, sm: 2, md: 0 }}
+          >
             <Search
               placeholder={`Tìm kiếm`}
               onChange={(e) => handleSearch(e.target.value)}
