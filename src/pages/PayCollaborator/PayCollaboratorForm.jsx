@@ -30,7 +30,7 @@ import { formattedAmountByNumeric } from '../../helper/moneyConvert';
 import { getAllCollaboratorOptions } from '../../constants/collaboratorOptions';
 import { roleConfig } from '../../constants/enums/collaborator-enum';
 import { getCollaboratorByCode } from '../../api/collaborator';
-import { CheckCircleOutline } from '@mui/icons-material';
+import { CheckCircleOutline, RestoreOutlined, SaveOutlined } from '@mui/icons-material';
 import { Modal } from 'antd';
 import typography from '../../utils/typography';
 
@@ -540,15 +540,11 @@ const PayCollaboratorForm = () => {
                     <Grid item xs={16} display="flex" justifyContent="flex-end">
                       <Button
                         variant="contained"
+                        startIcon={!loadingIsManager && <CheckCircleOutline />}
                         sx={{
-                          width: '100%',
-                          maxWidth: '200px',
                           backgroundColor: theme.primary[500],
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
                         }}
-                        disabled={loadingIsManager}
+                        disabled={loadingIsManager || visibleFormIsAdmin || visibleFormIsManager}
                         onClick={() => {
                           setLoadingIsManager(true);
                           setTimeout(() => {
@@ -573,25 +569,18 @@ const PayCollaboratorForm = () => {
                           }, 1500);
                         }}
                       >
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            gap: 1,
-                          }}
-                        >
-                          {loadingIsManager ? (
-                            <CircularProgress size={24} sx={{ color: 'white' }} />
-                          ) : (
-                            <>
-                              <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
-                                Xác nhận
-                              </Typography>
-                              <CheckCircleOutline />
-                            </>
-                          )}
-                        </Box>
+                        {loadingIsManager ? (
+                          <CircularProgress size={24} sx={{ color: 'white' }} />
+                        ) : (
+                          <>
+                            <Typography
+                              fontSize={typography.fontSize.sizeM}
+                              sx={{ textTransform: 'none', fontSize: { xs: 14, md: 'inherit' } }}
+                            >
+                              Xác nhận
+                            </Typography>
+                          </>
+                        )}
                       </Button>
                     </Grid>
                   </Grid>
@@ -600,12 +589,8 @@ const PayCollaboratorForm = () => {
 
               <Grid item xs={16} display="flex" justifyContent="flex-end" gap={2}>
                 <Button
-                  variant="contained"
-                  sx={{
-                    width: '100%',
-                    maxWidth: '200px',
-                    backgroundColor: theme.gray[300],
-                  }}
+                  variant="outlined"
+                  startIcon={<RestoreOutlined />}
                   disabled={loading || !isDisableBlockForm}
                   onClick={() => {
                     //reset
@@ -626,10 +611,9 @@ const PayCollaboratorForm = () => {
 
                 <Button
                   variant="contained"
+                  startIcon = {<SaveOutlined />}
                   type="submit"
                   sx={{
-                    width: '100%',
-                    maxWidth: '200px',
                     backgroundColor: theme.primary[500],
                   }}
                   disabled={loading || !isDisableBlockForm}
@@ -638,11 +622,11 @@ const PayCollaboratorForm = () => {
                     <CircularProgress size={24} sx={{ color: 'white' }} />
                   ) : isEdit ? (
                     <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
-                      'Cập nhật thông tin'
+                      'Cập nhật'
                     </Typography>
                   ) : (
                     <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
-                      Lưu thông tin
+                      Lưu
                     </Typography>
                   )}
                 </Button>

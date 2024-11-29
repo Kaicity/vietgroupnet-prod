@@ -231,12 +231,12 @@ const Order = () => {
     sheet.columns = columns;
 
     sheet.getRow(1).eachCell((cell) => {
-      cell.font = { bold: true, color: { argb: '000' } };
+      cell.font = { bold: true, color: { argb: 'FFFFFF' } };
       cell.alignment = { vertical: 'middle', horizontal: 'center' };
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'C4F09B' },
+        fgColor: { argb: '99C464' },
       };
       cell.border = {
         top: { style: 'thin' },
@@ -246,7 +246,7 @@ const Order = () => {
       };
     });
 
-    sheet.getRow(1).height = 50;
+    sheet.getRow(1).height = 30;
 
     if (Array.isArray(orders) && orders.length) {
       const transformedData = orders.map((order) => ({

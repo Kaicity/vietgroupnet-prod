@@ -268,7 +268,7 @@ const Student = () => {
       cell.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'C4F09B' },
+        fgColor: { argb: '99C464' },
       };
       cell.border = {
         top: { style: 'thin' },
@@ -278,7 +278,7 @@ const Student = () => {
       };
     });
 
-    sheet.getRow(1).height = 50;
+    sheet.getRow(1).height = 30;
 
     if (Array.isArray(students) && students.length) {
       const transformedData = students.map((student) => ({

@@ -376,7 +376,7 @@ const OrderDetail = () => {
                     border: '1px solid #ccc',
                   }}
                 >
-                  {order.visaTypes?order.visaTypes:"chưa có thông tin"}
+                  {order.visaTypes ? order.visaTypes : 'chưa có thông tin'}
                 </TableCell>
               </TableRow>
               <TableRow
@@ -608,7 +608,7 @@ const OrderDetail = () => {
                     border: '1px solid #ccc',
                   }}
                 >
-                  {order.interviewFormat?interviewConfig[order.interviewFormat]?.label:'Chưa có thông tin'}
+                  {order.interviewFormat ? interviewConfig[order.interviewFormat]?.label : 'Chưa có thông tin'}
                 </TableCell>
               </TableRow>
               <TableRow
@@ -688,7 +688,7 @@ const OrderDetail = () => {
                     border: '1px solid #ccc',
                   }}
                 >
-                  {order.interviewDate?format(new Date(order.interviewDate), 'dd-MM-yyyy'):'Chưa có thông tin'}
+                  {order.interviewDate ? format(new Date(order.interviewDate), 'dd-MM-yyyy') : 'Chưa có thông tin'}
                 </TableCell>
               </TableRow>
               <TableRow

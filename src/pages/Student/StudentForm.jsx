@@ -34,6 +34,7 @@ import { formattedAmountByNumeric } from '../../helper/moneyConvert.js';
 import CustomTextQuill from '../../components/CustomTextQuill.jsx';
 import BoxCard from '../../components/Card.jsx';
 import typography from '../../utils/typography.js';
+import { SaveOutlined } from '@mui/icons-material';
 
 const { Dragger } = Upload;
 
@@ -437,9 +438,8 @@ const StudentForm = () => {
                 <Button
                   variant="contained"
                   type="submit"
+                  startIcon = {<SaveOutlined />}
                   sx={{
-                    width: '100%',
-                    maxWidth: '200px',
                     backgroundColor: theme.primary[500],
                   }}
                   disabled={loading}
@@ -452,7 +452,7 @@ const StudentForm = () => {
                     </Typography>
                   ) : (
                     <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
-                      Lưu thông tin
+                      Lưu
                     </Typography>
                   )}
                 </Button>
