@@ -79,6 +79,11 @@ const CollaboratorForm = () => {
         case TYPE_SYSADMIN.role:
           const roleDataIsSysAdmin = [
             {
+              label: 'SysAdmin',
+              roleCode: '99',
+              value: 'Sysadmin',
+            },
+            {
               label: 'Giám đốc chi nhánh',
               roleCode: '10',
               value: 'Administrator',
@@ -305,7 +310,6 @@ const CollaboratorForm = () => {
                 : '';
 
               // Map collaborator khi được tham chiếu từ danh sách
-
               setValues({
                 name: collaborator.name || '',
                 gender: collaborator.gender || '',
@@ -526,7 +530,7 @@ const CollaboratorForm = () => {
                               options={roleOptions}
                               getOptionLabel={(option) => option?.label || ''}
                               value={roleOptions.find((option) => option.roleCode === values.roleCode) || null}
-                              disabled={isEdit && sessionStorage.getItem('role') !== TYPE_SYSADMIN.role} // Khóa cập nhật quyền khi edit chỉ sysadmin sử dụng
+                              disabled={isEdit} // Khóa cập nhật chức vụ, chỉ được phép cập nhật nâng quyền đối với sysadmin
                               onChange={(event, newValue) => {
                                 if (newValue) {
                                   setFieldValue('roleCode', newValue.roleCode);
@@ -538,7 +542,6 @@ const CollaboratorForm = () => {
                                   } else {
                                     setIsDisableEnter(false);
                                   }
-
                                   //Filter theo role mà người giới thiệu được lọc theo
                                   fetchCollaborator();
                                 } else {

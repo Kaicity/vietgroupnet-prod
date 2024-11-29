@@ -552,22 +552,32 @@ const Collaborator = () => {
         </>
       ),
       async onOk() {
-        try {
-          if (collaboratorCode && selectedRole) {
-            const roleData = {
-              roleCode: selectedRole,
-            };
+        if (selectedRole) {
+          try {
+            if (collaboratorCode && selectedRole) {
+              const roleData = {
+                roleCode: selectedRole,
+              };
 
-            const response = await updateRoleCollaboratorBySysAdmin(collaboratorCode, roleData);
+              const response = await updateRoleCollaboratorBySysAdmin(collaboratorCode, roleData);
 
-            if (response.status === 'success') {
-              setSeverity('success');
-              setIsShowMessage(true);
-              setContent('Cập nhật chức vụ thành công');
-              getDataCollaborators();
+              if (response.status === 'success') {
+                setSeverity('success');
+                setIsShowMessage(true);
+                setContent('Cập nhật chức vụ thành công');
+                getDataCollaborators();
+              }
             }
+          } catch (error) {
+            setSeverity('error');
+            setIsShowMessage(true);
+            setContent('Đã có lỗi khi cập nhật chức vụ');
           }
-        } catch (error) {}
+        } else {
+          setSeverity('warning');
+          setIsShowMessage(true);
+          setContent('Vui lòng chọn chức vụ để cập nhật');
+        }
       },
       onCancel() {
         return;

@@ -205,7 +205,7 @@ const Topbar = () => {
                 PaperProps={{
                   style: {
                     height: 200,
-                    width: '24ch',
+                    width: '22ch',
                     marginTop: '10px',
                   },
                 }}
