@@ -13,6 +13,7 @@ export const OrderSchema = yup.object().shape({
   eduRequirements: yup.string().required('Yêu cầu giáo dục là bắt buộc'),
   dominantHand: yup.string().required('Tay thuận là bắt buộc'),
   maritalStatus: yup.string().required('Tình trạng hôn nhân là bắt buộc'),
+  experience: yup.string().required('Kinh nghiệm là bắt buộc'),
   interviewDate: yup
     .string()
     .required('Ngày phỏng vấn là bắt buộc')
@@ -65,6 +66,9 @@ export const OrderSchema = yup.object().shape({
       const { minAge } = this.parent;
       return value > minAge;
     }),
-  jobDescription: yup.string().required('Mô Tả Công Việc là bắt buộc').max(300, 'Nôi dung không được vượt quá 50 ký tự'),
+  jobDescription: yup
+    .string()
+    .required('Mô Tả Công Việc là bắt buộc')
+    .max(300, 'Nôi dung không được vượt quá 50 ký tự'),
   vision: yup.string().required('Thị Lực là bắt buộc'),
 });

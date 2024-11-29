@@ -370,159 +370,163 @@ const PayCollaboratorForm = () => {
 
                     {/* ========================TAB NGUOI GIOI THIEU 1================================== */}
 
-                    {visibleFormIsManager && values.commission && (
-                      <>
-                        <Grid item xs={16}>
-                          {' '}
-                          <Divider />
-                        </Grid>
+                    {visibleFormIsManager &&
+                      values.commission &&
+                      reffererIsManager.collaboratorCode &&(
+                        <>
+                          <Grid item xs={16}>
+                            {' '}
+                            <Divider />
+                          </Grid>
 
-                        <Grid item xs={16} sm={16} md={3}>
-                          <CustomTextField
-                            label="Mã người giới thiệu"
-                            disabled={true}
-                            value={reffererIsManager.collaboratorCode || ''}
-                            onChange={(e) =>
-                              setReffererIsManager((prevState) => ({
-                                ...prevState,
-                                collaboratorCode: e.target.value,
-                              }))
-                            }
-                          />
-                        </Grid>
-
-                        <Grid item xs={16} sm={16} md={5}>
-                          <CustomTextField
-                            label="Tên người giới thiệu"
-                            disabled={true}
-                            value={reffererIsManager.name}
-                            onChange={(e) =>
-                              setReffererIsManager((prevState) => ({
-                                ...prevState,
-                                name: e.target.value,
-                              }))
-                            }
-                          />
-                        </Grid>
-
-                        <Grid item xs={16} sm={16} md={3}>
-                          <CustomTextFieldMoneyNumber
-                            label="Phần trăm hoa hồng ( % )"
-                            endAdornmentTitle={'%'}
-                            value={reffererIsManager.percent || 0}
-                            onChange={(e) => {
-                              const percentValue = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
-
-                              setReffererIsManager((prevState) => ({
-                                ...prevState,
-                                percent: percentValue,
-                              }));
-
-                              // Tính toán số tiền từ phần trăm hoa hồng
-                              setReffererIsManager((prevState) => ({
-                                ...prevState,
-                                commission: percentAmountPay(values.commission, percentValue) || null,
-                              }));
-                            }}
-                            onBlur={handleBlur}
-                            onInput={(e) => {
-                              if (e.target.value.length > 3) {
-                                e.target.value = e.target.value.slice(0, 3);
+                          <Grid item xs={16} sm={16} md={3}>
+                            <CustomTextField
+                              label="Mã người giới thiệu"
+                              disabled={true}
+                              value={reffererIsManager.collaboratorCode || ''}
+                              onChange={(e) =>
+                                setReffererIsManager((prevState) => ({
+                                  ...prevState,
+                                  collaboratorCode: e.target.value,
+                                }))
                               }
-                            }}
-                          />
-                        </Grid>
+                            />
+                          </Grid>
 
-                        <Grid item xs={16} sm={16} md={5}>
-                          <CustomTextFieldMoneyNumber
-                            label="Số tiền"
-                            disabled={true}
-                            endAdornmentTitle={'.00 VNĐ'}
-                            multiline
-                            value={reffererIsManager?.commission || 0}
-                            onChange={(e) => setReffererIsManager({ commission: e.target.value })}
-                          />
-                        </Grid>
-                      </>
-                    )}
+                          <Grid item xs={16} sm={16} md={5}>
+                            <CustomTextField
+                              label="Tên người giới thiệu"
+                              disabled={true}
+                              value={reffererIsManager.name}
+                              onChange={(e) =>
+                                setReffererIsManager((prevState) => ({
+                                  ...prevState,
+                                  name: e.target.value,
+                                }))
+                              }
+                            />
+                          </Grid>
+
+                          <Grid item xs={16} sm={16} md={3}>
+                            <CustomTextFieldMoneyNumber
+                              label="Phần trăm hoa hồng ( % )"
+                              endAdornmentTitle={'%'}
+                              value={reffererIsManager.percent || 0}
+                              onChange={(e) => {
+                                const percentValue = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+
+                                setReffererIsManager((prevState) => ({
+                                  ...prevState,
+                                  percent: percentValue,
+                                }));
+
+                                // Tính toán số tiền từ phần trăm hoa hồng
+                                setReffererIsManager((prevState) => ({
+                                  ...prevState,
+                                  commission: percentAmountPay(values.commission, percentValue) || null,
+                                }));
+                              }}
+                              onBlur={handleBlur}
+                              onInput={(e) => {
+                                if (e.target.value.length > 3) {
+                                  e.target.value = e.target.value.slice(0, 3);
+                                }
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid item xs={16} sm={16} md={5}>
+                            <CustomTextFieldMoneyNumber
+                              label="Số tiền"
+                              disabled={true}
+                              endAdornmentTitle={'.00 VNĐ'}
+                              multiline
+                              value={reffererIsManager?.commission || 0}
+                              onChange={(e) => setReffererIsManager({ commission: e.target.value })}
+                            />
+                          </Grid>
+                        </>,
+                      )}
 
                     {/* ========================TAB NGUOI GIOI THIEU 2================================== */}
 
-                    {visibleFormIsAdmin && values.commission && (
-                      <>
-                        <Grid item xs={16}>
-                          {' '}
-                          <Divider />
-                        </Grid>
+                    {visibleFormIsAdmin &&
+                      values.commission &&
+                      reffererIsAdmin.collaboratorCode &&(
+                        <>
+                          <Grid item xs={16}>
+                            {' '}
+                            <Divider />
+                          </Grid>
 
-                        <Grid item xs={16} sm={16} md={3}>
-                          <CustomTextField
-                            label="Mã người giới thiệu"
-                            disabled={true}
-                            value={reffererIsAdmin.collaboratorCode || ''}
-                            onChange={(e) =>
-                              setReffererIsAdmin((prevState) => ({
-                                ...prevState,
-                                collaboratorCode: e.target.value,
-                              }))
-                            }
-                          />
-                        </Grid>
-
-                        <Grid item xs={16} sm={16} md={5}>
-                          <CustomTextField
-                            label="Tên người giới thiệu"
-                            disabled={true}
-                            value={reffererIsAdmin.name || ''}
-                            onChange={(e) =>
-                              setReffererIsAdmin((prevState) => ({
-                                ...prevState,
-                                name: e.target.value,
-                              }))
-                            }
-                          />
-                        </Grid>
-
-                        <Grid item xs={16} sm={16} md={3}>
-                          <CustomTextFieldMoneyNumber
-                            label="Phần trăm hoa hồng ( % )"
-                            endAdornmentTitle={'%'}
-                            value={reffererIsAdmin.percent || 0}
-                            onChange={(e) => {
-                              const percentValue = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
-
-                              setReffererIsAdmin((prevState) => ({
-                                ...prevState,
-                                percent: percentValue,
-                              }));
-
-                              // Tính toán số tiền từ phần trăm hoa hồng
-                              setReffererIsAdmin((prevState) => ({
-                                ...prevState,
-                                commission: percentAmountPay(values.commission, percentValue) || null,
-                              }));
-                            }}
-                            onBlur={handleBlur}
-                            onInput={(e) => {
-                              if (e.target.value.length > 3) {
-                                e.target.value = e.target.value.slice(0, 3);
+                          <Grid item xs={16} sm={16} md={3}>
+                            <CustomTextField
+                              label="Mã người giới thiệu"
+                              disabled={true}
+                              value={reffererIsAdmin.collaboratorCode || ''}
+                              onChange={(e) =>
+                                setReffererIsAdmin((prevState) => ({
+                                  ...prevState,
+                                  collaboratorCode: e.target.value,
+                                }))
                               }
-                            }}
-                          />
-                        </Grid>
+                            />
+                          </Grid>
 
-                        <Grid item xs={16} sm={16} md={5}>
-                          <CustomTextFieldMoneyNumber
-                            label="Số tiền"
-                            disabled={true}
-                            endAdornmentTitle={'.00 VNĐ'}
-                            multiline
-                            value={reffererIsAdmin?.commission || 0}
-                            onChange={(e) => setReffererIsAdmin({ commission: e.target.value })}
-                          />
-                        </Grid>
-                      </>
-                    )}
+                          <Grid item xs={16} sm={16} md={5}>
+                            <CustomTextField
+                              label="Tên người giới thiệu"
+                              disabled={true}
+                              value={reffererIsAdmin.name || ''}
+                              onChange={(e) =>
+                                setReffererIsAdmin((prevState) => ({
+                                  ...prevState,
+                                  name: e.target.value,
+                                }))
+                              }
+                            />
+                          </Grid>
+
+                          <Grid item xs={16} sm={16} md={3}>
+                            <CustomTextFieldMoneyNumber
+                              label="Phần trăm hoa hồng ( % )"
+                              endAdornmentTitle={'%'}
+                              value={reffererIsAdmin.percent || 0}
+                              onChange={(e) => {
+                                const percentValue = Math.min(100, Math.max(0, parseFloat(e.target.value) || 0));
+
+                                setReffererIsAdmin((prevState) => ({
+                                  ...prevState,
+                                  percent: percentValue,
+                                }));
+
+                                // Tính toán số tiền từ phần trăm hoa hồng
+                                setReffererIsAdmin((prevState) => ({
+                                  ...prevState,
+                                  commission: percentAmountPay(values.commission, percentValue) || null,
+                                }));
+                              }}
+                              onBlur={handleBlur}
+                              onInput={(e) => {
+                                if (e.target.value.length > 3) {
+                                  e.target.value = e.target.value.slice(0, 3);
+                                }
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid item xs={16} sm={16} md={5}>
+                            <CustomTextFieldMoneyNumber
+                              label="Số tiền"
+                              disabled={true}
+                              endAdornmentTitle={'.00 VNĐ'}
+                              multiline
+                              value={reffererIsAdmin?.commission || 0}
+                              onChange={(e) => setReffererIsAdmin({ commission: e.target.value })}
+                            />
+                          </Grid>
+                        </>,
+                      )}
 
                     <Grid item xs={16}>
                       <CustomTextField
@@ -611,7 +615,7 @@ const PayCollaboratorForm = () => {
 
                 <Button
                   variant="contained"
-                  startIcon = {<SaveOutlined />}
+                  startIcon={<SaveOutlined />}
                   type="submit"
                   sx={{
                     backgroundColor: theme.primary[500],
