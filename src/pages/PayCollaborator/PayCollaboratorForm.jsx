@@ -31,7 +31,7 @@ import { getAllCollaboratorOptions } from '../../constants/collaboratorOptions';
 import { roleConfig } from '../../constants/enums/collaborator-enum';
 import { getCollaboratorByCode } from '../../api/collaborator';
 import { CheckCircleOutline, RestoreOutlined, SaveOutlined } from '@mui/icons-material';
-import { Modal } from 'antd';
+import { Modal, Tag } from 'antd';
 import typography from '../../utils/typography';
 
 const PayCollaboratorForm = () => {
@@ -298,12 +298,29 @@ const PayCollaboratorForm = () => {
                         )}
                         renderOption={(props, option) => (
                           <li {...props} key={option.collaboratorCode}>
-                            {option.name}{' '}
-                            <span style={{ color: theme.primary[500] }}>
-                              {'('}
-                              {roleConfig[option.roleName?.toUpperCase()]?.label}
-                              {')'}
-                            </span>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                width: '100%',
+                              }}
+                            >
+                              <Typography
+                                sx={{
+                                  flex: 1,
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                              >
+                                {option.name}
+                              </Typography>
+
+                              <Tag color={roleConfig[option.roleName?.toUpperCase()]?.color}>
+                                {roleConfig[option.roleName?.toUpperCase()]?.label}
+                              </Tag>
+                            </Box>
                           </li>
                         )}
                         ListboxProps={{

@@ -15,11 +15,12 @@ const typography = {
         size: 20,
       },
     },
-    sizeDropdown:13,
+    sizeDropdown: 13,
     sizeM: 15,
     sizeS: 14,
     sizeL: 20,
     sizeXL: 28,
+    size2XL: 32,
   },
   spacing: {
     small: '5px',

@@ -30,12 +30,13 @@ import Message from '../../components/Message';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../../firebase';
 import { format } from 'date-fns';
-import { Col, Modal, Row } from 'antd';
+import { Col, Modal, Row, Tag } from 'antd';
 import { TYPE_ADMINISTRATOR, TYPE_MANAGER, TYPE_SYSADMIN } from '../../constants/roleDecentralization.js';
 import BoxCard from '../../components/Card.jsx';
 import { getAllCollaboratorOptions } from '../../constants/collaboratorOptions.js';
 import typography from '../../utils/typography.js';
 import { SaveOutlined } from '@mui/icons-material';
+import { roleConfig } from '../../constants/enums/collaborator-enum.js';
 
 const CollaboratorForm = () => {
   const [roleOptions, setRoleOptions] = useState([]);
@@ -635,7 +636,29 @@ const CollaboratorForm = () => {
                             )}
                             renderOption={(props, option) => (
                               <li {...props} key={option.collaboratorCode}>
-                                {option.name}
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                  }}
+                                >
+                                  <Typography
+                                    sx={{
+                                      flex: 1,
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                  >
+                                    {option.name}
+                                  </Typography>
+
+                                  <Tag color={roleConfig[option.roleName?.toUpperCase()]?.color}>
+                                    {roleConfig[option.roleName?.toUpperCase()]?.label}
+                                  </Tag>
+                                </Box>
                               </li>
                             )}
                             ListboxProps={{
