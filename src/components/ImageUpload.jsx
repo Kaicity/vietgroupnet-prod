@@ -2,20 +2,11 @@ import React, { useEffect, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import theme from '../utils/theme';
-import { Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import typography from '../utils/typography';
-import {
-  getStorage,
-  uploadBytesResumable,
-  getDownloadURL,
-  ref,
-} from 'firebase/storage';
+import { getStorage, uploadBytesResumable, getDownloadURL, ref } from 'firebase/storage';
 
-const ImageUpload = ({
-  onImageSelect,
-  defaultImage: defaultImageUrl,
-  isEdit,
-}) => {
+const ImageUpload = ({ onImageSelect, defaultImage: defaultImageUrl, isEdit }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -117,6 +108,7 @@ const ImageUpload = ({
             <PhotoCamera sx={{ fontSize: '50px', color: theme.primary[500] }} />
           )}
         </IconButton>
+
         <Typography
           fontSize={typography.fontSize.sizeM}
           textAlign="center"
