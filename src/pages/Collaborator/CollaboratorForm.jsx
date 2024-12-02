@@ -669,8 +669,10 @@ const CollaboratorForm = () => {
                       </BoxCard>
                     </Col>
                   )}
+                </Row>
 
-                  <Col xs={24} md={24} lg={14}>
+                <Row gutter={16}>
+                  <Col xs={24}>
                     <Box display="flex" justifyContent="flex-end">
                       <Button
                         variant="contained"

@@ -639,7 +639,7 @@ const PayCollaboratorForm = () => {
                     <CircularProgress size={24} sx={{ color: 'white' }} />
                   ) : isEdit ? (
                     <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
-                      'Cập nhật'
+                      Cập nhật
                     </Typography>
                   ) : (
                     <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
