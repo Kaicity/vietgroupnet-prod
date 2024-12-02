@@ -40,7 +40,7 @@ const DataTable = ({
       scroll={
         isScroll && {
           y: 470,
-          x: 'max-content',
+          x: 800,
         }
       }
       style={{
@@ -57,8 +57,12 @@ const DataTable = ({
       }
       locale={{
         emptyText: (
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            <img src={notDataIcon} alt="No Data" style={{ marginBottom: '10px' }} />
+          <div style={{ textAlign: 'center', padding: '20px', minWidth: '100%', overflow: 'hidden' }}>
+            <img
+              src={notDataIcon}
+              alt="No Data"
+              style={{ marginBottom: '10px', maxWidth: '100%', objectFit: 'cover' }}
+            />
             <p>Không có dữ liệu để hiển thị</p>
           </div>
         ),

@@ -732,6 +732,7 @@ const Student = () => {
             <Col span={22}>
               <Label>Thông tin chi tiết học viên</Label>
             </Col>
+
             <Col span={1}>
               <IconButton
                 sx={{
@@ -767,11 +768,11 @@ const Student = () => {
             <Col span={12}>
               <DescriptionItem title="Mã học viên" content={studentDetail?.studentCode} />
             </Col>
-          </Row>
-          <Row>
             <Col span={12}>
               <DescriptionItem title="Tên học viên" content={studentDetail?.name} />
             </Col>
+          </Row>
+          <Row>
             <Col span={12}>
               <DescriptionItem title="Giới tính" content={genderConfig[studentDetail?.gender.toUpperCase()]?.label} />
             </Col>
@@ -784,7 +785,7 @@ const Student = () => {
               />
             </Col>
             <Col span={12}>
-              <DescriptionItem title="CCCD/CMND" content={studentDetail?.identityNumber || 'Chưa có'} />
+              <DescriptionItem title="CCCD" content={studentDetail?.identityNumber || 'Chưa có'} />
             </Col>
           </Row>
           <Row>
@@ -809,7 +810,7 @@ const Student = () => {
             Đánh giá học tập
           </Typography>
           <Row>
-            <Col span={14}>
+            <Col span={24}>
               <DescriptionItem
                 title="Tình trạng học viên"
                 content={studentStatusConfig[studentDetail?.studentStatus?.toUpperCase()]?.label || 'Chưa có'}
@@ -817,7 +818,7 @@ const Student = () => {
             </Col>
           </Row>
           <Row>
-            <Col span={12}>
+            <Col span={24}>
               <DescriptionItem
                 title="Số tiền đã đóng"
                 content={formattedAmountByNumeric(studentDetail?.amountPaid) + ' đ' || 'Chưa có'}
@@ -868,13 +869,15 @@ const Student = () => {
             Thông Tin Liên Lạc
           </Typography>
           <Row>
-            <Col span={12}>
+            <Col span={24}>
               <DescriptionItem
                 title="Mã người giới thiệu"
                 content={studentDetail?.collaborator?.collaboratorCode || 'Chưa có'}
               />
             </Col>
-            <Col span={12}>
+          </Row>
+          <Row>
+            <Col span={24}>
               <DescriptionItem title="Tên người giới thiệu" content={studentDetail?.collaborator?.name || 'Chưa có'} />
             </Col>
           </Row>

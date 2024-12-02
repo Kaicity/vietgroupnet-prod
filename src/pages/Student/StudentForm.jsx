@@ -208,22 +208,9 @@ const StudentForm = () => {
                     width: '100%',
                     margin: 'auto',
                   }}
-                >
-                  {/* <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        marginTop="20px"
-                      >
-                        <ImageUpload
-                          onImageSelect={(file) => setFieldValue('imgUrl', file)}
-                          defaultImage={values.imgUrl}
-                          isEdit={isEdit}
-                        />
-                      </Box> */}
-
+                >                 
                   <Grid container spacing={3} columns={16}>
-                    <Grid item xs={16}>
+                    {/* <Grid item xs={16}>
                       <Box width="100%" height="auto">
                         <Dragger {...props}>
                           <p className="ant-upload-drag-icon">
@@ -236,7 +223,7 @@ const StudentForm = () => {
                           </p>
                         </Dragger>
                       </Box>
-                    </Grid>
+                    </Grid> */}
 
                     <Grid item xs={16} sm={16} md={7}>
                       <CustomTextField
@@ -448,7 +435,7 @@ const StudentForm = () => {
                     <CircularProgress size={24} sx={{ color: 'white' }} />
                   ) : isEdit ? (
                     <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
-                      Cập nhật thông tin
+                      Cập nhật
                     </Typography>
                   ) : (
                     <Typography fontSize={typography.fontSize.sizeM} sx={{ textTransform: 'none' }}>
