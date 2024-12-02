@@ -14,6 +14,7 @@ export const OrderSchema = yup.object().shape({
   dominantHand: yup.string().required('Tay thuận là bắt buộc'),
   maritalStatus: yup.string().required('Tình trạng hôn nhân là bắt buộc'),
   experience: yup.string().required('Kinh nghiệm là bắt buộc'),
+  salary: yup.string().required('Mức lương là bắt buộc'),
   interviewDate: yup
     .string()
     .required('Ngày phỏng vấn là bắt buộc')

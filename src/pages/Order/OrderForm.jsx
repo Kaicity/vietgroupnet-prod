@@ -34,6 +34,8 @@ import interviewFormatOptions from '../../constants/interviewFormatOptions.js';
 import interviewStatusOptions from '../../constants/interviewStatusOptions.js';
 import typography from '../../utils/typography.js';
 import CustomTextQuill from '../../components/CustomTextQuill.jsx';
+import CustomTextFieldMoneyNumber from '../../components/CustomTextFieldMoneyNumber.jsx';
+import { formattedAmountByNumeric, transformMoneyToNumeric, transformNumericToMoney } from '../../helper/moneyConvert.js';
 
 const OrderForm = () => {
   const [isShowMessage, setIsShowMessage] = useState(false);
@@ -147,6 +149,11 @@ const OrderForm = () => {
     try {
       let response;
 
+      if(values.salary){
+        const getSalary=values.salary
+        const transferSalary=transformMoneyToNumeric(getSalary);
+        values.salary=transferSalary;
+      }
       if (isEdit) {
         response = await updateOrder(values.orderCode, values);
       } else {
@@ -222,7 +229,7 @@ const OrderForm = () => {
                 female: orderDetail.order?.female || '',
                 minAge: orderDetail.order?.minAge || '',
                 maxAge: orderDetail.order?.maxAge || '',
-                salary: orderDetail.order?.salary || '',
+                salary: formattedAmountByNumeric(orderDetail?.order?.salary) || '',
                 interviewStatus: orderDetail.order?.interviewStatus || '',
                 eduRequirements: orderDetail.order?.eduRequirements || '',
                 departureDate: formattedDate || '',
@@ -652,22 +659,16 @@ const OrderForm = () => {
                               />
                             </Grid>
                             <Grid item xs={12} md={12}>
-                              <CustomTextField
-                                label="Mức Lương"
+                            <CustomTextFieldMoneyNumber
+                                label="Số tiền đã đóng"
+                                endAdornmentTitle={'.00 VNĐ'}
                                 name="salary"
-                                type="number"
-                                placeholder="Ví dụ: 5 triệu"
+                                multiline
                                 value={values.salary}
-                                onInput={(e) => {
-                                  if (e.target.value > 12) {
-                                    e.target.value = e.target.value.slice(0, 12);
-                                  }
-                                }}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                error={touched.salary && Boolean(errors.salary)}
+                                error={touched.salary && errors.salary}
                                 helperText={touched.salary && errors.salary}
-                                fullWidth
                               />
                             </Grid>
                           </Grid>

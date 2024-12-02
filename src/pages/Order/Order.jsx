@@ -112,6 +112,7 @@ const Order = () => {
       setLoading(false);
     }
   };
+
   //  delete button order
   const confirmDelete = () => {
     Modal.confirm({
@@ -451,13 +452,13 @@ const Order = () => {
     },
 
     {
-      title: 'Lương'.toUpperCase(),
+      title: 'Lương',
       dataIndex: 'salary',
       key: 'salary',
       width: collapsed ? 220 : 200,
-      sorter: (a, b) => a.address.localeCompare(b.address),
-      render: (amountPaid) => {
-        const formattedAmount = formattedAmountByNumeric(amountPaid);
+      sorter: (a, b) => parseFloat(a.salary) - parseFloat(b.salary),
+      render: (salary) => {
+        const formattedAmount = formattedAmountByNumeric(salary);
         return <span>{formattedAmount == 0 ? 'Chưa đóng' : formattedAmount + ' đ'}</span>;
       },
     },

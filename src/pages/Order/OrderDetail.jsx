@@ -645,8 +645,7 @@ const OrderDetail = () => {
                     border: '1px solid #ccc',
                   }}
                 >
-                  {formattedAmountByNumeric(order.salary)} yên/tháng
-                  <br></br>
+                  {formattedAmountByNumeric(order.salary)} đ                  <br></br>
                   <div
                     dangerouslySetInnerHTML={{
                       __html: order.notes,
